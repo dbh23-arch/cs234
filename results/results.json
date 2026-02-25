@@ -1,0 +1,13 @@
+[
+  {
+    "method": "bc",
+    "task": "click-button",
+    "num_demos": 100,
+    "seed": 42,
+    "success_rate": 0.4,
+    "mean_reward": -0.24943999999999997,
+    "std_reward": 0.9213104636331881,
+    "mean_length": 1.0,
+    "num_episodes": 5
+  }
+]

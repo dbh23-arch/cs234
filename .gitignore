@@ -1,0 +1,27 @@
+# Trained models (416MB+)
+results/models/
+
+# Demo data (31MB+, regenerable via collect_demos.py)
+data/demos/
+
+# Results JSON files are small and worth keeping
+# results/*.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Misc
+*.log

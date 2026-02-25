@@ -1,0 +1,11 @@
+torch
+numpy
+gymnasium
+miniwob
+selenium
+tqdm
+matplotlib
+pandas
+tensorboard
+wandb
+pyyaml
