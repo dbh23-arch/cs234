@@ -1,1 +1,128 @@
-{}
+{
+  "bc_click-checkboxes-soft_human_n10_s42": {
+    "method": "bc",
+    "task": "click-checkboxes-soft_human",
+    "num_demos": 10,
+    "seed": 42,
+    "encoder_type": "dom"
+  },
+  "bc_click-checkboxes-soft_human_n10_s123": {
+    "method": "bc",
+    "task": "click-checkboxes-soft_human",
+    "num_demos": 10,
+    "seed": 123,
+    "encoder_type": "dom"
+  },
+  "bc_click-checkboxes-soft_human_n10_s456": {
+    "method": "bc",
+    "task": "click-checkboxes-soft_human",
+    "num_demos": 10,
+    "seed": 456,
+    "encoder_type": "dom"
+  },
+  "bc_click-checkboxes-soft_human_n25_s42": {
+    "method": "bc",
+    "task": "click-checkboxes-soft_human",
+    "num_demos": 25,
+    "seed": 42,
+    "encoder_type": "dom"
+  },
+  "bc_click-checkboxes-soft_human_n25_s123": {
+    "method": "bc",
+    "task": "click-checkboxes-soft_human",
+    "num_demos": 25,
+    "seed": 123,
+    "encoder_type": "dom"
+  },
+  "bc_click-checkboxes-soft_human_n25_s456": {
+    "method": "bc",
+    "task": "click-checkboxes-soft_human",
+    "num_demos": 25,
+    "seed": 456,
+    "encoder_type": "dom"
+  },
+  "bc_click-checkboxes-soft_human_n50_s42": {
+    "method": "bc",
+    "task": "click-checkboxes-soft_human",
+    "num_demos": 50,
+    "seed": 42,
+    "encoder_type": "dom"
+  },
+  "bc_click-checkboxes-soft_human_n50_s123": {
+    "method": "bc",
+    "task": "click-checkboxes-soft_human",
+    "num_demos": 50,
+    "seed": 123,
+    "encoder_type": "dom"
+  },
+  "bc_click-checkboxes-soft_human_n50_s456": {
+    "method": "bc",
+    "task": "click-checkboxes-soft_human",
+    "num_demos": 50,
+    "seed": 456,
+    "encoder_type": "dom"
+  },
+  "bc_click-checkboxes-soft_human_n100_s42": {
+    "method": "bc",
+    "task": "click-checkboxes-soft_human",
+    "num_demos": 100,
+    "seed": 42,
+    "encoder_type": "dom"
+  },
+  "bc_click-checkboxes-soft_human_n100_s123": {
+    "method": "bc",
+    "task": "click-checkboxes-soft_human",
+    "num_demos": 100,
+    "seed": 123,
+    "encoder_type": "dom"
+  },
+  "bc_click-checkboxes-soft_human_n100_s456": {
+    "method": "bc",
+    "task": "click-checkboxes-soft_human",
+    "num_demos": 100,
+    "seed": 456,
+    "encoder_type": "dom"
+  },
+  "bc_click-checkboxes-soft_human_n250_s42": {
+    "method": "bc",
+    "task": "click-checkboxes-soft_human",
+    "num_demos": 250,
+    "seed": 42,
+    "encoder_type": "dom"
+  },
+  "bc_click-checkboxes-soft_human_n250_s123": {
+    "method": "bc",
+    "task": "click-checkboxes-soft_human",
+    "num_demos": 250,
+    "seed": 123,
+    "encoder_type": "dom"
+  },
+  "bc_click-checkboxes-soft_human_n250_s456": {
+    "method": "bc",
+    "task": "click-checkboxes-soft_human",
+    "num_demos": 250,
+    "seed": 456,
+    "encoder_type": "dom"
+  },
+  "bc_click-checkboxes-soft_human_n500_s42": {
+    "method": "bc",
+    "task": "click-checkboxes-soft_human",
+    "num_demos": 500,
+    "seed": 42,
+    "encoder_type": "dom"
+  },
+  "bc_click-checkboxes-soft_human_n500_s123": {
+    "method": "bc",
+    "task": "click-checkboxes-soft_human",
+    "num_demos": 500,
+    "seed": 123,
+    "encoder_type": "dom"
+  },
+  "bc_click-checkboxes-soft_human_n500_s456": {
+    "method": "bc",
+    "task": "click-checkboxes-soft_human",
+    "num_demos": 500,
+    "seed": 456,
+    "encoder_type": "dom"
+  }
+}

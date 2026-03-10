@@ -9,3 +9,4 @@ pandas
 tensorboard
 wandb
 pyyaml
+datasets
