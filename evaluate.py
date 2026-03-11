@@ -19,6 +19,7 @@ from miniwob.action import ActionTypes
 from models.bc import BCAgent
 from models.iql import IQLAgent
 from models.dt import DecisionTransformerAgent
+from models.ppo import PPOAgent
 from utils.state_encoder import extract_dom_features
 from utils.text_features import dom_to_text, tokenize_page
 
@@ -68,6 +69,14 @@ def load_agent(method, config, model_path, device, encoder_type="dom"):
             dropout=config["dt"]["dropout"],
             encoder_type=encoder_type,
             freeze_lm=freeze_lm,
+        )
+
+    elif method == "ppo":
+        agent = PPOAgent(
+            state_dim=config["state"]["state_dim"],
+            hidden_dim=config["ppo"]["hidden_dim"],
+            max_elements=config["state"]["max_dom_elements"]
+
         )
 
     agent.load_state_dict(torch.load(model_path, map_location=device, weights_only=True))
@@ -267,7 +276,7 @@ def evaluate_agent(agent, method, task_name, config, device,
                    tokenizer=None, render_mode=None):
     """Evaluate an agent on a MiniWoB++ task."""
     env = gym.make(f"miniwob/{task_name}-v1", render_mode=render_mode,
-                   wait_ms=500)
+                   wait_ms=0)
 
     successes = 0
     total_rewards = []
@@ -305,7 +314,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, default="configs/default.yaml")
     parser.add_argument("--method", type=str, default="bc",
-                        choices=["bc", "iql", "dt", "all"])
+                        choices=["bc", "iql", "dt", "ppo", "all"])
     parser.add_argument("--task", type=str, default=None)
     parser.add_argument("--num_demos", type=int, default=None)
     parser.add_argument("--seed", type=int, default=None)
@@ -341,7 +350,7 @@ def main():
                  config["env"]["tasks"]["medium"] +
                  config["env"]["tasks"]["hard"])
 
-    demo_sizes = [args.num_demos] if args.num_demos else config["data"]["data_sizes"]
+    demo_sizes = [args.num_demos] if args.num_demos is not None else config["data"]["data_sizes"]
     seeds = [args.seed] if args.seed else config["training"]["seeds"]
 
     enc_prefix = f"{encoder_type}_" if encoder_type != "dom" else ""
