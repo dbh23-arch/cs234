@@ -16,8 +16,15 @@ from tqdm import tqdm
 from models.bc import BCAgent
 from models.iql import IQLAgent
 from models.dt import DecisionTransformerAgent
+import gymnasium as gym
+import miniwob
+from collections import OrderedDict
+from miniwob.action import ActionTypes
+from models.ppo import (PPOAgent, get_returns, calculate_advantage,
+                            update_policy, update_value)
 from utils.dataset import TrajectoryDataset, SequenceDataset
 from utils.dataset import TextTrajectoryDataset, TextSequenceDataset
+from utils.state_encoder import extract_dom_features
 
 
 def get_device(config_device="auto"):
@@ -240,7 +247,168 @@ def train_dt(config, task_name, num_demos, seed, device, encoder_type="dom"):
     return agent
 
 
-TRAIN_FNS = {"bc": train_bc, "iql": train_iql, "dt": train_dt}
+def train_ppo(config, task_name, num_demos, seed, device, encoder_type="dom"):
+    ppo_cfg = config["ppo"]
+    gamma      = ppo_cfg["gamma"]
+    eps_clip   = ppo_cfg["eps_clip"]
+    update_freq = ppo_cfg["update_freq"]
+    batch_size  = ppo_cfg["batch_size"]
+    max_ep_len  = ppo_cfg["max_ep_len"]
+    num_batches = ppo_cfg["num_batches"]
+    lr          = config["training"]["lr"]
+
+    def parse_dom_elements(obs):
+        elements = []
+        for elem in obs.get("dom_elements", []):
+            def to_float(v):
+                return v.item() if hasattr(v, 'item') else float(v or 0)
+            elements.append({
+                "tag": str(elem.get("tag", "div")),
+                "type": str(elem.get("type", "")),
+                "text": str(elem.get("text", "")),
+                "value": str(elem.get("value", "")),
+                "left": to_float(elem.get("left", 0)),
+                "top": to_float(elem.get("top", 0)),
+                "width": to_float(elem.get("width", 0)),
+                "height": to_float(elem.get("height", 0)),
+                "visible": bool(elem.get("visible", True)),
+                "focused": bool(elem.get("focused", False)),
+            })
+        return elements
+
+    def make_env_action(env, elements, action_type_idx, element_idx):
+        action_types = env.unwrapped.action_space_config.action_types
+        if element_idx < len(elements):
+            elem = elements[element_idx]
+            cx = elem["left"] + elem["width"] / 2
+            cy = elem["top"] + elem["height"] / 2
+            cx = max(0, min(cx, 160.0))
+            cy = max(0, min(cy, 210.0))
+
+        else:
+            cx, cy = 80.0, 105.0
+        act = OrderedDict()
+        act["ref"] = np.int64(0)
+        act["coords"] = np.array([cx, cy], dtype=np.float32)
+        act["text"] = ""
+        act["field"] = np.int64(0)
+        act["key"] = np.int64(0)
+        if action_type_idx == 0:
+            act["action_type"] = np.int64(action_types.index(ActionTypes.CLICK_COORDS))
+        else:
+            act["action_type"] = np.int64(action_types.index(ActionTypes.TYPE_TEXT))
+        return act
+
+    agent = PPOAgent(
+        state_dim=config["state"]["state_dim"],
+        hidden_dim=ppo_cfg["hidden_dim"],
+        max_elements=config["state"]["max_dom_elements"],
+    ).to(device)
+
+    policy_params = (list(agent.state_encoder.parameters()) +
+                     list(agent.action_type_head.parameters()) +
+                     list(agent.element_score.parameters()))
+    value_params  = list(agent.value_head.parameters())
+    optimizer_pi = torch.optim.Adam(policy_params, lr=lr)
+    optimizer_v  = torch.optim.Adam(value_params,  lr=lr)
+
+    env = gym.make(f"miniwob/{task_name}-v1", render_mode=None, wait_ms=0)
+
+    all_total_rewards = []
+    averaged_total_rewards = []
+
+    for t in range(num_batches):
+        print(f"  Batch {t+1}/{num_batches}: collecting {batch_size} steps...", flush=True)
+
+        paths = []
+        episode_rewards = []
+        episode = 0
+        steps = 0
+
+        while steps < batch_size:
+            obs, info = env.reset(seed=seed + episode)
+            utterance = obs.get("utterance", "")
+            elements = parse_dom_elements(obs)
+            features, mask = extract_dom_features(elements, utterance)
+
+            ep_features, ep_masks = [], []
+            ep_action_types, ep_element_idxs, ep_old_logprobs, ep_rewards = [], [], [], []
+            episode_reward = 0
+
+            for step in range(max_ep_len):
+                ep_features.append(features)
+                ep_masks.append(mask)
+
+                features_t = torch.tensor(features, dtype=torch.float32,
+                                          device=device).unsqueeze(0)
+                mask_t = torch.tensor(mask, dtype=torch.float32,
+                                      device=device).unsqueeze(0)
+
+                with torch.no_grad():
+                    action_type, element_idx, old_logprob = agent.act(
+                        features_t, mask_t, return_log_prob=True
+                    )
+
+                env_action = make_env_action(env, elements, action_type, element_idx)
+                obs, reward, done, truncated, info = env.step(env_action)
+
+                ep_action_types.append(action_type)
+                ep_element_idxs.append(element_idx)
+                ep_old_logprobs.append(old_logprob)
+                ep_rewards.append(reward)
+                episode_reward += reward
+                steps += 1
+
+                if done or truncated or step == max_ep_len - 1:
+                    episode_rewards.append(episode_reward)
+                    break
+                if steps == batch_size:
+                    break
+
+                elements = parse_dom_elements(obs)
+                features, mask = extract_dom_features(elements, utterance)
+
+            paths.append({
+                "features":      np.array(ep_features),
+                "masks":         np.array(ep_masks),
+                "action_types":  np.array(ep_action_types),
+                "element_idxs":  np.array(ep_element_idxs),
+                "old_logprobs":  np.array(ep_old_logprobs),
+                "reward":        np.array(ep_rewards),
+            })
+            episode += 1
+
+        all_total_rewards.extend(episode_rewards)
+        all_features     = np.concatenate([p["features"]     for p in paths])
+        all_masks        = np.concatenate([p["masks"]        for p in paths])
+        all_action_types = np.concatenate([p["action_types"] for p in paths])
+        all_element_idxs = np.concatenate([p["element_idxs"] for p in paths])
+        old_logprobs     = np.concatenate([p["old_logprobs"] for p in paths])
+
+        returns    = get_returns(paths, gamma)
+        advantages = calculate_advantage(returns, all_features, all_masks,
+                                         agent, device)
+
+        for k in range(update_freq):
+            update_value(agent, optimizer_v, all_features, all_masks,
+                         returns, device)
+            update_policy(agent, optimizer_pi, all_features, all_masks,
+                          all_action_types, all_element_idxs,
+                          advantages, old_logprobs, eps_clip, device)
+
+        avg_reward = np.mean(episode_rewards)
+        sigma_reward = np.sqrt(np.var(episode_rewards) / len(episode_rewards))
+        averaged_total_rewards.append(avg_reward)
+        avg_reward = np.mean(episode_rewards)
+        sigma_reward = np.sqrt(np.var(episode_rewards) / len(episode_rewards))
+        averaged_total_rewards.append(avg_reward)
+        print(f"  Batch {t+1}/{num_batches}: avg_reward={avg_reward:.3f} +/- {sigma_reward:.3f}  ({len(episode_rewards)} eps)", flush=True)
+    env.close()
+    return agent
+
+
+
+TRAIN_FNS = {"bc": train_bc, "iql": train_iql, "dt": train_dt, "ppo": train_ppo}
 
 
 def run_experiment(config, method, task_name, num_demos, seed, device,
@@ -262,7 +430,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, default="configs/default.yaml")
     parser.add_argument("--method", type=str, default="bc",
-                        choices=["bc", "iql", "dt", "all"])
+                        choices=["bc", "iql", "dt", "ppo", "all"])
     parser.add_argument("--task", type=str, default=None,
                         help="Single task to train on (default: all)")
     parser.add_argument("--num_demos", type=int, default=None,
@@ -294,7 +462,7 @@ def main():
                  config["env"]["tasks"]["medium"] +
                  config["env"]["tasks"]["hard"])
 
-    demo_sizes = [args.num_demos] if args.num_demos else config["data"]["data_sizes"]
+    demo_sizes = [args.num_demos] if args.num_demos is not None else config["data"]["data_sizes"]
     seeds = [args.seed] if args.seed else config["training"]["seeds"]
 
     # Encoder prefix for model file names

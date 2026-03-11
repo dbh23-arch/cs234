@@ -124,5 +124,12 @@
     "num_demos": 500,
     "seed": 456,
     "encoder_type": "dom"
+  },
+  "ppo_click-link_n0_s42": {
+    "method": "ppo",
+    "task": "click-link",
+    "num_demos": 0,
+    "seed": 42,
+    "encoder_type": "dom"
   }
 }

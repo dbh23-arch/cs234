@@ -74,6 +74,15 @@ dt:
   context_length: 20
   dropout: 0.1
 
+ppo:
+  hidden_dim: 256
+  gamma: 0.99
+  eps_clip: 0.2
+  update_freq: 5
+  batch_size: 256
+  max_ep_len: 20
+  num_batches: 350
+
 # Evaluation
 eval:
   num_episodes: 100
