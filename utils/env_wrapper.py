@@ -1,7 +1,4 @@
-"""
-Wrapper around MiniWoB++ environment that extracts DOM features
-and provides a clean interface for our agents.
-"""
+"""Wrapper around MiniWoB++ gym env that handles DOM feature extraction."""
 
 import gymnasium as gym
 import numpy as np
@@ -9,12 +6,6 @@ from utils.state_encoder import extract_dom_features
 
 
 class MiniWoBWrapper:
-    """
-    Wraps a MiniWoB++ environment to:
-    1. Extract DOM-based state features instead of raw pixels
-    2. Provide a discrete action space (action_type, element_id)
-    3. Track trajectory data for offline RL
-    """
 
     def __init__(self, task_name, max_elements=64, headless=True, wait_ms=500):
         self.task_name = task_name
@@ -32,34 +23,17 @@ class MiniWoBWrapper:
         self.utterance = ""
 
     def reset(self):
-        """Reset environment and return initial state features."""
         obs, info = self.env.reset()
         return self._process_obs(obs)
 
     def step(self, action):
-        """
-        Take an action in the environment.
-
-        Args:
-            action: dict with keys:
-                - action_type: 'click' or 'type'
-                - element_idx: index into current DOM elements
-                - text: (optional) text to type
-
-        Returns:
-            state_features, reward, done, truncated, info
-        """
-        # Convert our action to MiniWoB action
         miniwob_action = self._convert_action(action)
         obs, reward, done, truncated, info = self.env.step(miniwob_action)
         state_features = self._process_obs(obs)
         return state_features, reward, done, truncated, info
 
     def _process_obs(self, obs):
-        """Extract DOM features from MiniWoB observation."""
         self.utterance = obs.get("utterance", "")
-
-        # Extract DOM elements from the observation
         dom_elements = self._get_dom_elements(obs)
         self.current_dom_elements = dom_elements
 
@@ -76,7 +50,6 @@ class MiniWoBWrapper:
         }
 
     def _get_dom_elements(self, obs):
-        """Extract interactable DOM elements from observation."""
         elements = []
 
         dom_info = obs.get("dom_elements", [])
@@ -101,17 +74,14 @@ class MiniWoBWrapper:
         return elements
 
     def _convert_action(self, action):
-        """Convert our action format to MiniWoB action format."""
         action_type = action["action_type"]
         elem_idx = action["element_idx"]
 
         if elem_idx >= len(self.current_dom_elements):
-            # Default to clicking center if invalid element
+            # invalid index, just do something random
             return self.env.action_space.sample()
 
         elem = self.current_dom_elements[elem_idx]
-
-        # Calculate click coordinates (center of element)
         cx = elem["left"] + elem["width"] / 2
         cy = elem["top"] + elem["height"] / 2
 
@@ -130,9 +100,7 @@ class MiniWoBWrapper:
             )
 
     def get_num_elements(self):
-        """Return current number of DOM elements."""
         return len(self.current_dom_elements)
 
     def close(self):
-        """Close the environment."""
         self.env.close()

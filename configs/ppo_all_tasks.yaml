@@ -1,0 +1,95 @@
+# CS234 Project Configuration
+
+# Environment
+env:
+  tasks:
+    simple:
+      - click-button
+      - click-link
+      - click-option
+      - click-dialog
+      - click-dialog-2
+    medium:
+      - login-user
+      - enter-text
+      - search-engine
+      - navigate-tree
+      - click-checkboxes
+    hard:
+      - email-inbox
+      - social-media
+      - use-autocomplete
+  headless: true
+  wait_ms: 500
+
+# Data collection
+data:
+  demos_per_task: 500
+  data_sizes: [10, 25, 50, 100, 250, 500]
+  save_dir: data/demos
+
+# State representation
+state:
+  max_dom_elements: 64
+  element_embedding_dim: 64
+  state_dim: 256
+
+# Encoder configuration
+encoder:
+  type: dom          # "dom" (hand-crafted 24-dim) or "text" (DistilBERT)
+  lm_model: distilbert-base-uncased
+  freeze_lm: true    # freeze LM weights, only train projection layers
+
+# Training
+training:
+  seed: 42
+  seeds: [42, 123, 456]
+  batch_size: 64
+  lr: 3.0e-4
+  epochs: 100
+  eval_episodes: 100
+  device: auto  # auto, cpu, cuda, mps
+
+# Behavioral Cloning
+bc:
+  hidden_dim: 256
+  num_layers: 2
+
+# IQL
+iql:
+  hidden_dim: 256
+  num_layers: 2
+  discount: 0.99
+  tau: 0.7        # expectile for value function
+  beta: 3.0       # inverse temperature for policy extraction
+  target_update_rate: 0.005
+
+# Decision Transformer
+dt:
+  n_layers: 4
+  n_heads: 4
+  embed_dim: 128
+  context_length: 20
+  dropout: 0.1
+
+ppo:
+  hidden_dim: 256
+  gamma: 0.99
+  eps_clip: 0.2
+  update_freq: 5
+  batch_size: 128
+  max_ep_len: 20
+  num_batches: 30
+  entropy_coeff: 0.02
+
+# Evaluation
+eval:
+  num_episodes: 100
+  save_trajectories: true
+
+# Logging
+logging:
+  use_wandb: false
+  project_name: cs234-web-agent
+  log_interval: 10
+  save_dir: results

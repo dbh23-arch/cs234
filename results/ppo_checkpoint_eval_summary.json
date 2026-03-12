@@ -1,0 +1,56 @@
+[
+  {
+    "file": "ppo_click-button_s123.pt",
+    "task": "click-button",
+    "seed": 123,
+    "num_demos": null,
+    "success_rate": 0.55,
+    "mean_reward": 0.09456999999999997,
+    "std_reward": 0.9900792761693379
+  },
+  {
+    "file": "ppo_click-button_s42.pt",
+    "task": "click-button",
+    "seed": 42,
+    "num_demos": null,
+    "success_rate": 0.45,
+    "mean_reward": -0.10535999999999998,
+    "std_reward": 0.9890719045650826
+  },
+  {
+    "file": "ppo_click-button_s456.pt",
+    "task": "click-button",
+    "seed": 456,
+    "num_demos": null,
+    "success_rate": 0.75,
+    "mean_reward": 0.49218499999999993,
+    "std_reward": 0.8615281407330813
+  },
+  {
+    "file": "ppo_click-dialog-2_n0_s42.pt",
+    "task": "click-dialog-2",
+    "seed": 42,
+    "num_demos": 0,
+    "success_rate": 0.0,
+    "mean_reward": 0.0,
+    "std_reward": 0.0
+  },
+  {
+    "file": "ppo_click-link_n0_s42.pt",
+    "task": "click-link",
+    "seed": 42,
+    "num_demos": 0,
+    "success_rate": 0.4,
+    "mean_reward": -0.20455500000000004,
+    "std_reward": 0.9742286207430985
+  },
+  {
+    "file": "ppo_click-link_s42.pt",
+    "task": "click-link",
+    "seed": 42,
+    "num_demos": null,
+    "success_rate": 0.0,
+    "mean_reward": 0.0,
+    "std_reward": 0.0
+  }
+]

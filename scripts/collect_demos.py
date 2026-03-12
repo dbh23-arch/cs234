@@ -1,6 +1,7 @@
-"""
-Collect demonstration trajectories from MiniWoB++ environments.
-Uses scripted heuristic policies for simple tasks.
+"""Collect heuristic demonstrations for MiniWoB++ tasks.
+
+Each task has a hand-coded policy that solves it (or tries to).
+We run these to generate training data for the offline RL methods.
 """
 
 import os
@@ -18,13 +19,11 @@ from miniwob.action import ActionTypes
 from utils.state_encoder import extract_dom_features
 from utils.text_features import dom_elements_to_raw
 
-
 def get_dom_elements_from_obs(obs):
-    """Extract DOM element list from MiniWoB observation."""
     elements = []
     dom_info = obs.get("dom_elements", [])
     for elem in dom_info:
-        # Handle numpy arrays from MiniWoB (e.g., left/top can be arrays)
+        
         def to_float(val):
             if hasattr(val, 'item'):
                 return val.item()
@@ -45,9 +44,7 @@ def get_dom_elements_from_obs(obs):
         })
     return elements
 
-
 def make_click_action(env, coords):
-    """Create a click action at (x, y) coordinates."""
     action_types = env.unwrapped.action_space_config.action_types
     click_idx = action_types.index(ActionTypes.CLICK_COORDS)
     action = OrderedDict()
@@ -59,9 +56,7 @@ def make_click_action(env, coords):
     action["key"] = np.int64(0)
     return action
 
-
 def make_type_action(env, coords, text):
-    """Create a type action at (x, y) with given text."""
     action_types = env.unwrapped.action_space_config.action_types
     type_idx = action_types.index(ActionTypes.TYPE_TEXT)
     action = OrderedDict()
@@ -73,9 +68,7 @@ def make_type_action(env, coords, text):
     action["key"] = np.int64(0)
     return action
 
-
 def make_click_element_action(env, ref):
-    """Create a click-element action by ref."""
     action_types = env.unwrapped.action_space_config.action_types
     click_idx = action_types.index(ActionTypes.CLICK_ELEMENT)
     action = OrderedDict()
@@ -87,31 +80,304 @@ def make_click_element_action(env, ref):
     action["key"] = np.int64(0)
     return action
 
+class HeuristicState:
+    def __init__(self):
+        self.steps_done = []  
+        self.data = {}  
 
-def heuristic_policy(env, obs, dom_elements, utterance, task_name):
-    """
-    Simple heuristic policy for MiniWoB++ tasks.
-    Returns (env_action, action_record) or (None, None).
-    """
+    def has_done(self, action_desc):
+        return action_desc in self.steps_done
+
+    def mark_done(self, action_desc):
+        self.steps_done.append(action_desc)
+
+def _is_input(elem, input_types=("text", "", "search")):
+    tag = elem.get("tag", "")
+    typ = elem.get("type", "")
+    
+    if tag in ("input", "textarea") and typ in input_types:
+        return True
+    
+    if tag.startswith("input"):
+        suffix = tag[5:].lstrip("_")  
+        if not suffix:
+            suffix = ""
+        if suffix in input_types:
+            return True
+    if tag == "textarea":
+        return True
+    return False
+
+def _is_password(elem):
+    tag = elem.get("tag", "")
+    typ = elem.get("type", "")
+    return (tag == "input" and typ == "password") or tag == "input_password"
+
+def heuristic_policy(env, obs, dom_elements, utterance, task_name,
+                     heuristic_state=None):
+    import re
     utt_lower = utterance.lower()
+    if heuristic_state is None:
+        heuristic_state = HeuristicState()
 
-    # For click tasks: find the element matching the utterance
-    if "click" in task_name:
-        # First pass: exact text match in utterance
+    
+    if "click-option" in task_name:
+        
+        
+        
+        quoted = re.findall(r'"([^"]*)"', utterance)
+        if quoted:
+            target = quoted[0]
+        else:
+            m = re.search(r'[Ss]elect\s+(\S+)', utterance)
+            target = m.group(1) if m else ""
+        target_lower = target.lower()
+
+        if not heuristic_state.has_done("clicked_radio"):
+            
+            
+            for i, elem in enumerate(dom_elements):
+                if elem["tag"] == "t" and elem.get("text", "").lower().strip() == target_lower:
+                    
+                    for j in range(i - 1, -1, -1):
+                        if dom_elements[j]["tag"] in ("input_radio", "input_checkbox"):
+                            radio = dom_elements[j]
+                            cx = radio["left"] + radio["width"] / 2
+                            cy = radio["top"] + radio["height"] / 2
+                            env_action = make_click_action(env, [cx, cy])
+                            action_record = {"action_type_idx": 0,
+                                             "element_idx": j, "text": ""}
+                            heuristic_state.mark_done("clicked_radio")
+                            return env_action, action_record
+            
+            for i, elem in enumerate(dom_elements):
+                text = elem.get("text", "").lower().strip()
+                if text == target_lower and elem["tag"] in ("option", "li", "div", "span", "label"):
+                    cx = elem["left"] + elem["width"] / 2
+                    cy = elem["top"] + elem["height"] / 2
+                    env_action = make_click_action(env, [cx, cy])
+                    action_record = {"action_type_idx": 0, "element_idx": i,
+                                     "text": ""}
+                    heuristic_state.mark_done("clicked_radio")
+                    return env_action, action_record
+
+        
+        if not heuristic_state.has_done("clicked_submit"):
+            for i, elem in enumerate(dom_elements):
+                text = elem.get("text", "").lower().strip()
+                if elem["tag"] == "button" and text in ("submit", "ok"):
+                    cx = elem["left"] + elem["width"] / 2
+                    cy = elem["top"] + elem["height"] / 2
+                    env_action = make_click_action(env, [cx, cy])
+                    action_record = {"action_type_idx": 0, "element_idx": i,
+                                     "text": ""}
+                    heuristic_state.mark_done("clicked_submit")
+                    return env_action, action_record
+
+    
+    if "click-dialog" in task_name:
+        
+        quoted = re.findall(r'"([^"]*)"', utterance)
+        target_label = quoted[0].lower() if quoted else "x"
+
+        if target_label == "x":
+            
+            for i, elem in enumerate(dom_elements):
+                if elem["tag"] == "button":
+                    text = elem.get("text", "").lower().strip()
+                    if text in ("", "x", "\u00d7", "close"):
+                        cx = elem["left"] + elem["width"] / 2
+                        cy = elem["top"] + elem["height"] / 2
+                        env_action = make_click_action(env, [cx, cy])
+                        action_record = {"action_type_idx": 0,
+                                         "element_idx": i, "text": ""}
+                        return env_action, action_record
+        else:
+            
+            for i, elem in enumerate(dom_elements):
+                if elem["tag"] == "button":
+                    text = elem.get("text", "").lower().strip()
+                    if text == target_label:
+                        cx = elem["left"] + elem["width"] / 2
+                        cy = elem["top"] + elem["height"] / 2
+                        env_action = make_click_action(env, [cx, cy])
+                        action_record = {"action_type_idx": 0,
+                                         "element_idx": i, "text": ""}
+                        return env_action, action_record
+
+    
+    if "click-checkboxes" in task_name:
+        
+        
+        quoted = re.findall(r'"([^"]*)"', utterance)
+        targets = [q.lower() for q in quoted]
+        if not targets:
+            
+            m = re.search(r'(?:select|click|check)\s+(.+?)(?:\s+and\s+|\s*$)', utt_lower)
+            if m:
+                raw = m.group(1)
+                targets = [t.strip().strip(',') for t in re.split(r',\s*|\s+and\s+', raw)]
+
+        
+        if not heuristic_state.has_done("checked_all"):
+            checked_any = False
+            for i, elem in enumerate(dom_elements):
+                if elem["tag"] in ("input_checkbox", "input_radio"):
+                    
+                    label_text = ""
+                    
+                    for j in range(i + 1, min(i + 3, len(dom_elements))):
+                        t = dom_elements[j].get("text", "").strip()
+                        if t:
+                            label_text = t.lower()
+                            break
+                    
+                    for j in range(i + 1, min(i + 3, len(dom_elements))):
+                        if dom_elements[j]["tag"] == "t":
+                            label_text = dom_elements[j].get("text", "").lower().strip()
+                            break
+                    if label_text and label_text in targets:
+                        key = f"checked_{label_text}"
+                        if not heuristic_state.has_done(key):
+                            cx = elem["left"] + elem["width"] / 2
+                            cy = elem["top"] + elem["height"] / 2
+                            env_action = make_click_action(env, [cx, cy])
+                            action_record = {"action_type_idx": 0,
+                                             "element_idx": i, "text": ""}
+                            heuristic_state.mark_done(key)
+                            return env_action, action_record
+
+            
+            heuristic_state.mark_done("checked_all")
+            for i, elem in enumerate(dom_elements):
+                text = elem.get("text", "").lower().strip()
+                if elem["tag"] == "button" and text in ("submit", "ok"):
+                    cx = elem["left"] + elem["width"] / 2
+                    cy = elem["top"] + elem["height"] / 2
+                    env_action = make_click_action(env, [cx, cy])
+                    action_record = {"action_type_idx": 0, "element_idx": i,
+                                     "text": ""}
+                    return env_action, action_record
+
+    
+    if "navigate-tree" in task_name:
+        
+        quoted = re.findall(r'"([^"]*)"', utterance)
+        target = quoted[0].lower() if quoted else ""
+        if not target:
+            m = re.search(r'named\s+"?(\w+)"?', utterance)
+            target = m.group(1).lower() if m else ""
+
+        
+        for i, elem in enumerate(dom_elements):
+            text = elem.get("text", "").lower().strip()
+            if text == target and elem["tag"] in ("span", "a", "div", "li"):
+                cx = elem["left"] + elem["width"] / 2
+                cy = elem["top"] + elem["height"] / 2
+                env_action = make_click_action(env, [cx, cy])
+                action_record = {"action_type_idx": 0, "element_idx": i,
+                                 "text": ""}
+                return env_action, action_record
+
+        
+        for i, elem in enumerate(dom_elements):
+            if elem["tag"] in ("span", "div", "li") and elem.get("text", "").strip():
+                
+                text = elem.get("text", "").strip()
+                if text.lower() != target:  
+                    key = f"expanded_{text}"
+                    if not heuristic_state.has_done(key):
+                        cx = elem["left"] + elem["width"] / 2
+                        cy = elem["top"] + elem["height"] / 2
+                        env_action = make_click_action(env, [cx, cy])
+                        action_record = {"action_type_idx": 0,
+                                         "element_idx": i, "text": ""}
+                        heuristic_state.mark_done(key)
+                        return env_action, action_record
+
+    
+    if "email-inbox" in task_name:
+        
+        m = re.search(r'(?:by|from)\s+(\w+)', utt_lower)
+        target_sender = m.group(1).lower() if m else ""
+
+        
+        
+        
+        sender_idx = None
+        sender_top = None
+        for i, elem in enumerate(dom_elements):
+            text = elem.get("text", "").lower().strip()
+            if text == target_sender:
+                sender_idx = i
+                sender_top = elem.get("top", 0)
+                break
+
+        if sender_idx is not None:
+            
+            
+            best_trash = None
+            best_trash_idx = None
+            for i, elem in enumerate(dom_elements):
+                if elem["tag"] == "span" and elem.get("width", 0) < 20:
+                    elem_top = elem.get("top", 0)
+                    
+                    if abs(elem_top - sender_top) < 15:
+                        text = elem.get("text", "").strip()
+                        if not text or len(text) <= 2:
+                            
+                            if best_trash is None or elem.get("left", 0) > best_trash.get("left", 0):
+                                best_trash = elem
+                                best_trash_idx = i
+
+            if best_trash is not None:
+                cx = best_trash["left"] + best_trash["width"] / 2
+                cy = best_trash["top"] + best_trash["height"] / 2
+                
+                cx = max(1, min(cx, 159))
+                cy = max(51, min(cy, 209))
+                env_action = make_click_action(env, [cx, cy])
+                action_record = {"action_type_idx": 0,
+                                 "element_idx": best_trash_idx, "text": ""}
+                return env_action, action_record
+
+    
+    if "social-media" in task_name:
+        
+        user_m = re.search(r'@(\w+)', utterance)
+        target_user = user_m.group(1).lower() if user_m else ""
+        quoted = re.findall(r'"([^"]*)"', utterance)
+        target_button = quoted[0].lower() if quoted else ""
+
+        
+        for i, elem in enumerate(dom_elements):
+            text = elem.get("text", "").lower().strip()
+            if text == target_button:
+                
+                
+                cx = elem["left"] + elem["width"] / 2
+                cy = elem["top"] + elem["height"] / 2
+                env_action = make_click_action(env, [cx, cy])
+                action_record = {"action_type_idx": 0, "element_idx": i,
+                                 "text": ""}
+                return env_action, action_record
+
+    
+    if "click" in task_name and "option" not in task_name and "dialog" not in task_name and "checkboxes" not in task_name:
+        
         for i, elem in enumerate(dom_elements):
             text = elem.get("text", "").lower().strip()
             if not text:
                 continue
-            # Check if the element's text appears in the utterance
             if text in utt_lower and elem["tag"] in ("button", "a", "span", "div", "option", "label"):
                 cx = elem["left"] + elem["width"] / 2
                 cy = elem["top"] + elem["height"] / 2
                 env_action = make_click_action(env, [cx, cy])
-                action_record = {"action_type_idx": 0, "element_idx": i}
+                action_record = {"action_type_idx": 0, "element_idx": i,
+                                 "text": ""}
                 return env_action, action_record
 
-        # Second pass: check quoted text in utterance
-        import re
+        
         quoted = re.findall(r'"([^"]*)"', utterance)
         for q in quoted:
             q_lower = q.lower()
@@ -121,22 +387,37 @@ def heuristic_policy(env, obs, dom_elements, utterance, task_name):
                     cx = elem["left"] + elem["width"] / 2
                     cy = elem["top"] + elem["height"] / 2
                     env_action = make_click_action(env, [cx, cy])
-                    action_record = {"action_type_idx": 0, "element_idx": i}
+                    action_record = {"action_type_idx": 0, "element_idx": i,
+                                     "text": ""}
                     return env_action, action_record
 
-        # Third pass: click first button
+        
+        for i, elem in enumerate(dom_elements):
+            if elem["tag"] == "t":
+                text = elem.get("text", "").lower().strip()
+                if text and text in utt_lower:
+                    
+                    for j in range(i - 1, -1, -1):
+                        if dom_elements[j]["tag"] in ("button", "a", "span", "div", "label"):
+                            cx = dom_elements[j]["left"] + dom_elements[j]["width"] / 2
+                            cy = dom_elements[j]["top"] + dom_elements[j]["height"] / 2
+                            env_action = make_click_action(env, [cx, cy])
+                            action_record = {"action_type_idx": 0,
+                                             "element_idx": j, "text": ""}
+                            return env_action, action_record
+
+        
         for i, elem in enumerate(dom_elements):
             if elem["tag"] == "button" and elem.get("text", "").strip():
                 cx = elem["left"] + elem["width"] / 2
                 cy = elem["top"] + elem["height"] / 2
                 env_action = make_click_action(env, [cx, cy])
-                action_record = {"action_type_idx": 0, "element_idx": i}
+                action_record = {"action_type_idx": 0, "element_idx": i,
+                                 "text": ""}
                 return env_action, action_record
 
-    # For login-user: find username/password fields and submit
+    
     if "login" in task_name:
-        import re
-        # Extract username and password from utterance
         utt = utterance
         username_match = re.search(r'username\s*[:\s]\s*(\S+)', utt, re.IGNORECASE)
         password_match = re.search(r'password\s*[:\s]\s*(\S+)', utt, re.IGNORECASE)
@@ -145,68 +426,240 @@ def heuristic_policy(env, obs, dom_elements, utterance, task_name):
             username = username_match.group(1).strip().rstrip('.')
             password = password_match.group(1).strip().rstrip('.')
 
-            # Find input fields
-            for i, elem in enumerate(dom_elements):
-                if elem["tag"] == "input" and elem.get("type", "") in ("text", ""):
-                    # Check if this is a username field
-                    cx = elem["left"] + elem["width"] / 2
-                    cy = elem["top"] + elem["height"] / 2
-                    env_action = make_type_action(env, [cx, cy], username)
-                    action_record = {"action_type_idx": 1, "element_idx": i}
-                    return env_action, action_record
+            
+            if not heuristic_state.has_done("typed_username"):
+                for i, elem in enumerate(dom_elements):
+                    if _is_input(elem, ("text", "")):
+                        cx = elem["left"] + elem["width"] / 2
+                        cy = elem["top"] + elem["height"] / 2
+                        focus_action = make_click_action(env, [cx, cy])
+                        env.step(focus_action)
+                        env_action = make_type_action(env, [cx, cy], username)
+                        action_record = {"action_type_idx": 1, "element_idx": i,
+                                         "text": username}
+                        heuristic_state.mark_done("typed_username")
+                        return env_action, action_record
 
-            for i, elem in enumerate(dom_elements):
-                if elem["tag"] == "input" and elem.get("type", "") == "password":
-                    cx = elem["left"] + elem["width"] / 2
-                    cy = elem["top"] + elem["height"] / 2
-                    env_action = make_type_action(env, [cx, cy], password)
-                    action_record = {"action_type_idx": 1, "element_idx": i}
-                    return env_action, action_record
+            
+            if not heuristic_state.has_done("typed_password"):
+                for i, elem in enumerate(dom_elements):
+                    if _is_password(elem):
+                        cx = elem["left"] + elem["width"] / 2
+                        cy = elem["top"] + elem["height"] / 2
+                        focus_action = make_click_action(env, [cx, cy])
+                        env.step(focus_action)
+                        env_action = make_type_action(env, [cx, cy], password)
+                        action_record = {"action_type_idx": 1, "element_idx": i,
+                                         "text": password}
+                        heuristic_state.mark_done("typed_password")
+                        return env_action, action_record
 
-            # Look for submit button
-            for i, elem in enumerate(dom_elements):
-                text = elem.get("text", "").lower().strip()
-                if elem["tag"] == "button" and text in ("login", "submit", "log in", "sign in", "ok"):
-                    cx = elem["left"] + elem["width"] / 2
-                    cy = elem["top"] + elem["height"] / 2
-                    env_action = make_click_action(env, [cx, cy])
-                    action_record = {"action_type_idx": 0, "element_idx": i}
-                    return env_action, action_record
+            
+            if not heuristic_state.has_done("clicked_submit"):
+                for i, elem in enumerate(dom_elements):
+                    text = elem.get("text", "").lower().strip()
+                    if elem["tag"] == "button" and text in ("login", "submit", "log in", "sign in", "ok"):
+                        cx = elem["left"] + elem["width"] / 2
+                        cy = elem["top"] + elem["height"] / 2
+                        env_action = make_click_action(env, [cx, cy])
+                        action_record = {"action_type_idx": 0, "element_idx": i,
+                                         "text": ""}
+                        heuristic_state.mark_done("clicked_submit")
+                        return env_action, action_record
 
-    # For enter-text: find text input and type the specified text
+    
+    
+    
+    
     if "enter-text" in task_name:
-        import re
-        # Extract quoted text from utterance
         quoted = re.findall(r'"([^"]*)"', utterance)
         if quoted:
             target_text = quoted[0]
+
+            
+            if not heuristic_state.has_done("typed_text"):
+                for i, elem in enumerate(dom_elements):
+                    if _is_input(elem):
+                        cx = elem["left"] + elem["width"] / 2
+                        cy = elem["top"] + elem["height"] / 2
+                        
+                        focus_action = make_click_action(env, [cx, cy])
+                        env.step(focus_action)
+                        
+                        env_action = make_type_action(env, [cx, cy], target_text)
+                        action_record = {"action_type_idx": 1, "element_idx": i,
+                                         "text": target_text}
+                        heuristic_state.mark_done("typed_text")
+                        return env_action, action_record
+
+        
+        if not heuristic_state.has_done("clicked_submit"):
             for i, elem in enumerate(dom_elements):
-                if elem["tag"] in ("input", "textarea") and elem.get("type", "") in ("text", "", "search"):
+                text = elem.get("text", "").lower().strip()
+                if elem["tag"] == "button" and text in ("submit", "ok", "go"):
                     cx = elem["left"] + elem["width"] / 2
                     cy = elem["top"] + elem["height"] / 2
-                    env_action = make_type_action(env, [cx, cy], target_text)
-                    action_record = {"action_type_idx": 1, "element_idx": i}
+                    env_action = make_click_action(env, [cx, cy])
+                    action_record = {"action_type_idx": 0, "element_idx": i,
+                                     "text": ""}
+                    heuristic_state.mark_done("clicked_submit")
                     return env_action, action_record
 
-        # Look for submit button after typing
-        for i, elem in enumerate(dom_elements):
-            text = elem.get("text", "").lower().strip()
-            if elem["tag"] == "button" and text in ("submit", "ok", "go"):
+    
+    if "search" in task_name:
+        quoted = re.findall(r'"([^"]*)"', utterance)
+        search_text = quoted[0] if quoted else ""
+        if not search_text:
+            m = re.search(r'(?:search|find|look up|query)\s+(?:for\s+)?(.+)',
+                          utt_lower)
+            if m:
+                search_text = m.group(1).strip().rstrip('.')
+
+        
+        result_num = 1  
+        m = re.search(r'(\d+)(?:st|nd|rd|th)', utt_lower)
+        if m:
+            result_num = int(m.group(1))
+
+        if search_text and not heuristic_state.has_done("typed_search"):
+            for i, elem in enumerate(dom_elements):
+                if _is_input(elem):
+                    cx = elem["left"] + elem["width"] / 2
+                    cy = elem["top"] + elem["height"] / 2
+                    focus_action = make_click_action(env, [cx, cy])
+                    env.step(focus_action)
+                    env_action = make_type_action(env, [cx, cy], search_text)
+                    action_record = {"action_type_idx": 1, "element_idx": i,
+                                     "text": search_text}
+                    heuristic_state.mark_done("typed_search")
+                    return env_action, action_record
+
+        if not heuristic_state.has_done("clicked_search"):
+            for i, elem in enumerate(dom_elements):
+                text = elem.get("text", "").lower().strip()
+                if elem["tag"] == "button" and text in ("search", "submit", "go", "find"):
+                    cx = elem["left"] + elem["width"] / 2
+                    cy = elem["top"] + elem["height"] / 2
+                    env_action = make_click_action(env, [cx, cy])
+                    action_record = {"action_type_idx": 0, "element_idx": i,
+                                     "text": ""}
+                    heuristic_state.mark_done("clicked_search")
+                    return env_action, action_record
+
+        
+        if not heuristic_state.has_done("clicked_result"):
+            
+            
+            result_links = []
+            for i, elem in enumerate(dom_elements):
+                if elem["tag"] in ("a", "link"):
+                    text = elem.get("text", "").strip()
+                    
+                    if text and not text.isdigit() and text not in (">", "<", "»", "«", "..."):
+                        result_links.append((i, elem))
+
+            
+            if result_num > len(result_links):
+                if not heuristic_state.has_done("next_page"):
+                    
+                    for i, elem in enumerate(dom_elements):
+                        if elem["tag"] in ("a", "link"):
+                            text = elem.get("text", "").strip()
+                            if text in (">", "»", "2", "3"):
+                                cx = elem["left"] + elem["width"] / 2
+                                cy = elem["top"] + elem["height"] / 2
+                                env_action = make_click_action(env, [cx, cy])
+                                action_record = {"action_type_idx": 0,
+                                                 "element_idx": i, "text": ""}
+                                heuristic_state.mark_done("next_page")
+                                
+                                heuristic_state.data["remaining_result"] = result_num - len(result_links)
+                                return env_action, action_record
+                else:
+                    
+                    remaining = heuristic_state.data.get("remaining_result", 1)
+                    if remaining <= len(result_links):
+                        idx, elem = result_links[remaining - 1]
+                        cx = elem["left"] + elem["width"] / 2
+                        cy = elem["top"] + elem["height"] / 2
+                        env_action = make_click_action(env, [cx, cy])
+                        action_record = {"action_type_idx": 0,
+                                         "element_idx": idx, "text": ""}
+                        heuristic_state.mark_done("clicked_result")
+                        return env_action, action_record
+            elif result_num <= len(result_links):
+                idx, elem = result_links[result_num - 1]
                 cx = elem["left"] + elem["width"] / 2
                 cy = elem["top"] + elem["height"] / 2
                 env_action = make_click_action(env, [cx, cy])
-                action_record = {"action_type_idx": 0, "element_idx": i}
+                action_record = {"action_type_idx": 0, "element_idx": idx,
+                                 "text": ""}
+                heuristic_state.mark_done("clicked_result")
                 return env_action, action_record
+
+    
+    if "autocomplete" in task_name:
+        
+        starts_m = re.search(r'starts with "([^"]*)"', utterance)
+        ends_m = re.search(r'ends with "([^"]*)"', utterance)
+        prefix = starts_m.group(1) if starts_m else ""
+        suffix = ends_m.group(1) if ends_m else ""
+        
+        if not prefix:
+            quoted = re.findall(r'"([^"]*)"', utterance)
+            prefix = quoted[0] if quoted else ""
+
+        if prefix and not heuristic_state.has_done("typed_partial"):
+            for i, elem in enumerate(dom_elements):
+                if _is_input(elem):
+                    cx = elem["left"] + elem["width"] / 2
+                    cy = elem["top"] + elem["height"] / 2
+                    focus_action = make_click_action(env, [cx, cy])
+                    env.step(focus_action)
+                    env_action = make_type_action(env, [cx, cy], prefix)
+                    action_record = {"action_type_idx": 1, "element_idx": i,
+                                     "text": prefix}
+                    heuristic_state.mark_done("typed_partial")
+                    return env_action, action_record
+
+        if not heuristic_state.has_done("selected_suggestion"):
+            
+            prefix_lower = prefix.lower()
+            suffix_lower = suffix.lower()
+            for i, elem in enumerate(dom_elements):
+                text = elem.get("text", "").lower().strip()
+                if not text:
+                    continue
+                if elem["tag"] in ("li", "div", "span", "option", "a"):
+                    match = text.startswith(prefix_lower)
+                    if suffix_lower:
+                        match = match and text.endswith(suffix_lower)
+                    if match:
+                        cx = elem["left"] + elem["width"] / 2
+                        cy = elem["top"] + elem["height"] / 2
+                        env_action = make_click_action(env, [cx, cy])
+                        action_record = {"action_type_idx": 0,
+                                         "element_idx": i, "text": ""}
+                        heuristic_state.mark_done("selected_suggestion")
+                        return env_action, action_record
+
+        
+        if not heuristic_state.has_done("clicked_submit"):
+            for i, elem in enumerate(dom_elements):
+                text = elem.get("text", "").lower().strip()
+                if elem["tag"] == "button" and text in ("submit", "ok"):
+                    cx = elem["left"] + elem["width"] / 2
+                    cy = elem["top"] + elem["height"] / 2
+                    env_action = make_click_action(env, [cx, cy])
+                    action_record = {"action_type_idx": 0, "element_idx": i,
+                                     "text": ""}
+                    heuristic_state.mark_done("clicked_submit")
+                    return env_action, action_record
 
     return None, None
 
-
 def collect_mixed_demonstrations(task_name, num_demos=500, success_rate=1.0,
                                   max_steps=20, save_dir="data/demos", seed=42):
-    """
-    Collect mixed-quality demonstrations (successful + failed).
-    success_rate: fraction of successful demos (1.0 = all expert, 0.5 = half expert).
-    """
     print(f"\nCollecting {num_demos} mixed demos for {task_name} "
           f"(target quality: {success_rate:.0%})...")
 
@@ -232,6 +685,7 @@ def collect_mixed_demonstrations(task_name, num_demos=500, success_rate=1.0,
         trajectory_actions = []
         trajectory_rewards = []
         trajectory_dones = []
+        h_state = HeuristicState()
 
         dom_elements = get_dom_elements_from_obs(obs)
         features, mask = extract_dom_features(dom_elements, utterance)
@@ -246,12 +700,13 @@ def collect_mixed_demonstrations(task_name, num_demos=500, success_rate=1.0,
 
         for step in range(max_steps):
             env_action, action_record = heuristic_policy(
-                env, obs, dom_elements, utterance, task_name
+                env, obs, dom_elements, utterance, task_name,
+                heuristic_state=h_state,
             )
 
             if env_action is None:
                 env_action = env.action_space.sample()
-                action_record = {"action_type_idx": 0, "element_idx": 0}
+                action_record = {"action_type_idx": 0, "element_idx": 0, "text": ""}
 
             obs, reward, done, truncated, info = env.step(env_action)
             total_reward += reward
@@ -320,10 +775,8 @@ def collect_mixed_demonstrations(task_name, num_demos=500, success_rate=1.0,
 
     return trajectories
 
-
 def collect_demonstrations(task_name, num_demos=500, max_steps=20,
                            save_dir="data/demos", seed=42):
-    """Collect demonstration trajectories for a task."""
     print(f"\nCollecting {num_demos} demos for {task_name}...")
 
     env = gym.make(f"miniwob/{task_name}-v1", render_mode=None, wait_ms=500)
@@ -344,6 +797,7 @@ def collect_demonstrations(task_name, num_demos=500, max_steps=20,
         trajectory_actions = []
         trajectory_rewards = []
         trajectory_dones = []
+        h_state = HeuristicState()
 
         dom_elements = get_dom_elements_from_obs(obs)
         features, mask = extract_dom_features(dom_elements, utterance)
@@ -358,12 +812,13 @@ def collect_demonstrations(task_name, num_demos=500, max_steps=20,
 
         for step in range(max_steps):
             env_action, action_record = heuristic_policy(
-                env, obs, dom_elements, utterance, task_name
+                env, obs, dom_elements, utterance, task_name,
+                heuristic_state=h_state,
             )
 
             if env_action is None:
                 env_action = env.action_space.sample()
-                action_record = {"action_type_idx": 0, "element_idx": 0}
+                action_record = {"action_type_idx": 0, "element_idx": 0, "text": ""}
 
             obs, reward, done, truncated, info = env.step(env_action)
             total_reward += reward
@@ -417,7 +872,6 @@ def collect_demonstrations(task_name, num_demos=500, max_steps=20,
           f"{successes/max(attempts,1):.1%}")
 
     return trajectories
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

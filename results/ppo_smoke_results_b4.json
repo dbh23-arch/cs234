@@ -1,0 +1,80 @@
+[
+  {
+    "task": "click-button",
+    "success_rate": 0.5,
+    "mean_reward": -0.005889999999999995,
+    "std_reward": 0.9941124116014245
+  },
+  {
+    "task": "click-link",
+    "success_rate": 0.0,
+    "mean_reward": 0.0,
+    "std_reward": 0.0
+  },
+  {
+    "task": "click-option",
+    "success_rate": 0.0,
+    "mean_reward": 0.0,
+    "std_reward": 0.0
+  },
+  {
+    "task": "click-dialog",
+    "success_rate": 1.0,
+    "mean_reward": 0.97502,
+    "std_reward": 0.021547194713001504
+  },
+  {
+    "task": "click-dialog-2",
+    "success_rate": 0.0,
+    "mean_reward": 0.0,
+    "std_reward": 0.0
+  },
+  {
+    "task": "login-user",
+    "success_rate": 0.0,
+    "mean_reward": 0.0,
+    "std_reward": 0.0
+  },
+  {
+    "task": "enter-text",
+    "success_rate": 0.0,
+    "mean_reward": 0.0,
+    "std_reward": 0.0
+  },
+  {
+    "task": "search-engine",
+    "success_rate": 0.0,
+    "mean_reward": 0.0,
+    "std_reward": 0.0
+  },
+  {
+    "task": "navigate-tree",
+    "success_rate": 0.0,
+    "mean_reward": 0.0,
+    "std_reward": 0.0
+  },
+  {
+    "task": "click-checkboxes",
+    "success_rate": 0.0,
+    "mean_reward": -0.1,
+    "std_reward": 0.30000000000000004
+  },
+  {
+    "task": "email-inbox",
+    "success_rate": 0.0,
+    "mean_reward": 0.0,
+    "std_reward": 0.0
+  },
+  {
+    "task": "social-media",
+    "success_rate": 0.0,
+    "mean_reward": 0.0,
+    "std_reward": 0.0
+  },
+  {
+    "task": "use-autocomplete",
+    "success_rate": 0.0,
+    "mean_reward": 0.0,
+    "std_reward": 0.0
+  }
+]

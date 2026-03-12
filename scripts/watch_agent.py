@@ -1,11 +1,4 @@
-"""
-Watch a trained agent play MiniWoB++ tasks in the browser.
-Prints step-by-step actions for debugging and visualization.
-
-Usage:
-    python scripts/watch_agent.py --method bc --task click-button --num_demos 100 --seed 42
-    python scripts/watch_agent.py --method iql --task click-link --num_demos 500 --encoder_type text
-"""
+"""Watch a trained agent play MiniWoB++ tasks in a browser window."""
 
 import os
 import sys
@@ -26,7 +19,7 @@ from models.iql import IQLAgent
 from models.dt import DecisionTransformerAgent
 from utils.state_encoder import extract_dom_features
 from utils.text_features import dom_to_text, tokenize_page
-
+from evaluate import extract_text_from_utterance
 
 def get_device(config_device="auto"):
     if config_device == "auto":
@@ -36,9 +29,7 @@ def get_device(config_device="auto"):
             return torch.device("cpu")
     return torch.device(config_device)
 
-
 def load_agent(method, config, model_path, device, encoder_type="dom"):
-    """Load a trained agent from checkpoint."""
     freeze_lm = config.get("encoder", {}).get("freeze_lm", True)
 
     if method == "bc":
@@ -77,9 +68,7 @@ def load_agent(method, config, model_path, device, encoder_type="dom"):
     agent.to(device)
     return agent
 
-
 def parse_dom_elements(obs):
-    """Parse DOM elements from MiniWoB observation."""
     dom_elements = obs.get("dom_elements", [])
     elements = []
     for elem in dom_elements:
@@ -102,7 +91,6 @@ def parse_dom_elements(obs):
         })
     return elements
 
-
 def make_click_action(env, coords):
     action_types = env.unwrapped.action_space_config.action_types
     click_idx = action_types.index(ActionTypes.CLICK_COORDS)
@@ -114,7 +102,6 @@ def make_click_action(env, coords):
     action["field"] = np.int64(0)
     action["key"] = np.int64(0)
     return action
-
 
 def make_type_action(env, coords, text):
     action_types = env.unwrapped.action_space_config.action_types
@@ -128,9 +115,7 @@ def make_type_action(env, coords, text):
     action["key"] = np.int64(0)
     return action
 
-
 def describe_element(elem, idx):
-    """Create a human-readable description of a DOM element."""
     tag = elem["tag"]
     text = elem["text"].strip()[:30]
     x = elem["left"] + elem["width"] / 2
@@ -140,10 +125,8 @@ def describe_element(elem, idx):
     else:
         return f"[{idx}] {tag} at ({x:.0f}, {y:.0f})"
 
-
 def watch_episodes(agent, method, task_name, config, device, num_episodes=3,
                    encoder_type="dom", tokenizer=None, seed=42):
-    """Run episodes with verbose output and browser rendering."""
     env = gym.make(f"miniwob/{task_name}-v1", render_mode="human", wait_ms=800)
 
     successes = 0
@@ -162,9 +145,17 @@ def watch_episodes(agent, method, task_name, config, device, num_episodes=3,
 
         ep_reward = 0
         max_steps = 20
+        dt_running_return = 1.0
+        dt_past_ids = []
+        dt_past_amasks = []
+        dt_past_spans = []
+        dt_past_emasks = []
+        dt_past_action_types = []
+        dt_past_element_idxs = []
+        dt_past_returns = []
+        dt_past_timesteps = []
 
         for step in range(max_steps):
-            # Get agent's action
             with torch.no_grad():
                 if encoder_type == "text":
                     text, char_spans = dom_to_text(elements, utterance)
@@ -177,8 +168,34 @@ def watch_episodes(agent, method, task_name, config, device, num_episodes=3,
                     emask_t = torch.tensor(elem_mask, dtype=torch.float32, device=device)
 
                     if method == "dt":
-                        # Simplified single-step DT inference
-                        action = {"action_type_idx": 0, "element_idx": 0}
+                        K = min(step + 1, agent.context_length)
+                        start = max(0, step + 1 - K)
+
+                        all_ids = dt_past_ids[start:] + [ids_t]
+                        all_amasks = dt_past_amasks[start:] + [amask_t]
+                        all_spans = dt_past_spans[start:] + [spans_t]
+                        all_emasks = dt_past_emasks[start:] + [emask_t]
+                        all_at = dt_past_action_types[start:] + [0]
+                        all_ei = dt_past_element_idxs[start:] + [0]
+                        all_rtg = dt_past_returns[start:] + [dt_running_return]
+                        all_ts = dt_past_timesteps[start:] + [step]
+                        ctx_len = len(all_ids)
+
+                        at_preds, el_preds = agent.forward_text(
+                            torch.stack(all_ids).unsqueeze(0),
+                            torch.stack(all_amasks).unsqueeze(0),
+                            torch.stack(all_spans).unsqueeze(0),
+                            torch.stack(all_emasks).unsqueeze(0),
+                            torch.tensor([all_at], dtype=torch.long, device=device),
+                            torch.tensor([all_ei], dtype=torch.long, device=device),
+                            torch.tensor([all_rtg], dtype=torch.float32, device=device),
+                            torch.tensor([all_ts], dtype=torch.long, device=device),
+                            torch.ones(1, ctx_len, device=device),
+                        )
+                        action = {
+                            "action_type_idx": at_preds[0, -1].argmax().item(),
+                            "element_idx": el_preds[0, -1].argmax().item(),
+                        }
                     else:
                         action = agent.get_action_text(ids_t, amask_t, spans_t, emask_t)
                 else:
@@ -198,7 +215,6 @@ def watch_episodes(agent, method, task_name, config, device, num_episodes=3,
             elem_idx = action["element_idx"]
             action_type = "CLICK" if action["action_type_idx"] == 0 else "TYPE"
 
-            # Describe the action
             if elem_idx < len(elements):
                 elem = elements[elem_idx]
                 cx = elem["left"] + elem["width"] / 2
@@ -210,14 +226,26 @@ def watch_episodes(agent, method, task_name, config, device, num_episodes=3,
                 print(f"  Step {step+1}: {action_type} -> [invalid elem {elem_idx}] "
                       f"at (80, 105)")
 
-            # Execute action
             if action["action_type_idx"] == 0:
                 env_action = make_click_action(env, [cx, cy])
             else:
-                env_action = make_type_action(env, [cx, cy], "")
+                type_text = extract_text_from_utterance(
+                    utterance, elements, elem_idx, task_name
+                )
+                env_action = make_type_action(env, [cx, cy], type_text)
 
             obs, reward, done, truncated, info = env.step(env_action)
             ep_reward += reward
+            if method == "dt" and encoder_type == "text":
+                dt_past_ids.append(ids_t)
+                dt_past_amasks.append(amask_t)
+                dt_past_spans.append(spans_t)
+                dt_past_emasks.append(emask_t)
+                dt_past_action_types.append(action["action_type_idx"])
+                dt_past_element_idxs.append(action["element_idx"])
+                dt_past_returns.append(dt_running_return)
+                dt_past_timesteps.append(step)
+                dt_running_return = max(0.0, dt_running_return - reward)
 
             if reward != 0:
                 print(f"         -> reward: {reward:.2f}")
@@ -238,7 +266,6 @@ def watch_episodes(agent, method, task_name, config, device, num_episodes=3,
     print(f"Summary: {successes}/{num_episodes} episodes succeeded "
           f"({successes/num_episodes:.0%})")
     print(f"{'='*60}")
-
 
 def main():
     parser = argparse.ArgumentParser(
@@ -263,7 +290,6 @@ def main():
     print(f"Using device: {device}")
     print(f"Encoder: {args.encoder_type}")
 
-    # Load tokenizer if needed
     tokenizer = None
     if args.encoder_type == "text":
         from utils.text_state_encoder import get_tokenizer
@@ -297,7 +323,6 @@ def main():
         tokenizer=tokenizer,
         seed=args.seed,
     )
-
 
 if __name__ == "__main__":
     main()

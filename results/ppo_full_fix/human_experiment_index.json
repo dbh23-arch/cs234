@@ -1,0 +1,314 @@
+{
+  "human_ppo_click-button_n0_s42": {
+    "method": "ppo",
+    "task": "click-button",
+    "num_demos": 0,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_click-button_n0_s123": {
+    "method": "ppo",
+    "task": "click-button",
+    "num_demos": 0,
+    "seed": 123,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_click-button_n0_s456": {
+    "method": "ppo",
+    "task": "click-button",
+    "num_demos": 0,
+    "seed": 456,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_click-link_n0_s42": {
+    "method": "ppo",
+    "task": "click-link",
+    "num_demos": 0,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_click-link_n0_s123": {
+    "method": "ppo",
+    "task": "click-link",
+    "num_demos": 0,
+    "seed": 123,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_click-link_n0_s456": {
+    "method": "ppo",
+    "task": "click-link",
+    "num_demos": 0,
+    "seed": 456,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_click-option_n0_s42": {
+    "method": "ppo",
+    "task": "click-option",
+    "num_demos": 0,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_click-option_n0_s123": {
+    "method": "ppo",
+    "task": "click-option",
+    "num_demos": 0,
+    "seed": 123,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_click-option_n0_s456": {
+    "method": "ppo",
+    "task": "click-option",
+    "num_demos": 0,
+    "seed": 456,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_click-dialog_n0_s42": {
+    "method": "ppo",
+    "task": "click-dialog",
+    "num_demos": 0,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_click-dialog_n0_s123": {
+    "method": "ppo",
+    "task": "click-dialog",
+    "num_demos": 0,
+    "seed": 123,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_click-dialog_n0_s456": {
+    "method": "ppo",
+    "task": "click-dialog",
+    "num_demos": 0,
+    "seed": 456,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_click-dialog-2_n0_s42": {
+    "method": "ppo",
+    "task": "click-dialog-2",
+    "num_demos": 0,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_click-dialog-2_n0_s123": {
+    "method": "ppo",
+    "task": "click-dialog-2",
+    "num_demos": 0,
+    "seed": 123,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_click-dialog-2_n0_s456": {
+    "method": "ppo",
+    "task": "click-dialog-2",
+    "num_demos": 0,
+    "seed": 456,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_login-user_n0_s42": {
+    "method": "ppo",
+    "task": "login-user",
+    "num_demos": 0,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_login-user_n0_s123": {
+    "method": "ppo",
+    "task": "login-user",
+    "num_demos": 0,
+    "seed": 123,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_login-user_n0_s456": {
+    "method": "ppo",
+    "task": "login-user",
+    "num_demos": 0,
+    "seed": 456,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_enter-text_n0_s42": {
+    "method": "ppo",
+    "task": "enter-text",
+    "num_demos": 0,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_enter-text_n0_s123": {
+    "method": "ppo",
+    "task": "enter-text",
+    "num_demos": 0,
+    "seed": 123,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_enter-text_n0_s456": {
+    "method": "ppo",
+    "task": "enter-text",
+    "num_demos": 0,
+    "seed": 456,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_search-engine_n0_s42": {
+    "method": "ppo",
+    "task": "search-engine",
+    "num_demos": 0,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_search-engine_n0_s123": {
+    "method": "ppo",
+    "task": "search-engine",
+    "num_demos": 0,
+    "seed": 123,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_search-engine_n0_s456": {
+    "method": "ppo",
+    "task": "search-engine",
+    "num_demos": 0,
+    "seed": 456,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_navigate-tree_n0_s42": {
+    "method": "ppo",
+    "task": "navigate-tree",
+    "num_demos": 0,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_navigate-tree_n0_s123": {
+    "method": "ppo",
+    "task": "navigate-tree",
+    "num_demos": 0,
+    "seed": 123,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_navigate-tree_n0_s456": {
+    "method": "ppo",
+    "task": "navigate-tree",
+    "num_demos": 0,
+    "seed": 456,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_click-checkboxes_n0_s42": {
+    "method": "ppo",
+    "task": "click-checkboxes",
+    "num_demos": 0,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_click-checkboxes_n0_s123": {
+    "method": "ppo",
+    "task": "click-checkboxes",
+    "num_demos": 0,
+    "seed": 123,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_click-checkboxes_n0_s456": {
+    "method": "ppo",
+    "task": "click-checkboxes",
+    "num_demos": 0,
+    "seed": 456,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_email-inbox_n0_s42": {
+    "method": "ppo",
+    "task": "email-inbox",
+    "num_demos": 0,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_email-inbox_n0_s123": {
+    "method": "ppo",
+    "task": "email-inbox",
+    "num_demos": 0,
+    "seed": 123,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_email-inbox_n0_s456": {
+    "method": "ppo",
+    "task": "email-inbox",
+    "num_demos": 0,
+    "seed": 456,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_social-media_n0_s42": {
+    "method": "ppo",
+    "task": "social-media",
+    "num_demos": 0,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_social-media_n0_s123": {
+    "method": "ppo",
+    "task": "social-media",
+    "num_demos": 0,
+    "seed": 123,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_social-media_n0_s456": {
+    "method": "ppo",
+    "task": "social-media",
+    "num_demos": 0,
+    "seed": 456,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_use-autocomplete_n0_s42": {
+    "method": "ppo",
+    "task": "use-autocomplete",
+    "num_demos": 0,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_use-autocomplete_n0_s123": {
+    "method": "ppo",
+    "task": "use-autocomplete",
+    "num_demos": 0,
+    "seed": 123,
+    "encoder_type": "dom",
+    "source": "human"
+  },
+  "human_ppo_use-autocomplete_n0_s456": {
+    "method": "ppo",
+    "task": "use-autocomplete",
+    "num_demos": 0,
+    "seed": 456,
+    "encoder_type": "dom",
+    "source": "human"
+  }
+}

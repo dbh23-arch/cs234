@@ -17,8 +17,6 @@ env:
       - click-checkboxes
     hard:
       - email-inbox
-      - choose-date
-      - book-flight
       - social-media
       - use-autocomplete
   headless: true
@@ -65,6 +63,8 @@ iql:
   tau: 0.7        # expectile for value function
   beta: 3.0       # inverse temperature for policy extraction
   target_update_rate: 0.005
+  cql_alpha: 0.0        # set >0 to enable conservative Q regularization
+  cql_temperature: 1.0  # temperature for logsumexp in CQL term
 
 # Decision Transformer
 dt:
@@ -73,15 +73,18 @@ dt:
   embed_dim: 128
   context_length: 20
   dropout: 0.1
+  stitch_prob: 0.0      # set >0 to add stitched trajectories to DT dataset
+  stitch_topk_frac: 0.3 # fraction of top-return trajectories used for stitching
 
 ppo:
   hidden_dim: 256
   gamma: 0.99
   eps_clip: 0.2
   update_freq: 5
-  batch_size: 256
+  batch_size: 128
   max_ep_len: 20
-  num_batches: 350
+  num_batches: 100
+  entropy_coeff: 0.02
 
 # Evaluation
 eval:

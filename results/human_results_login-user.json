@@ -1,0 +1,54 @@
+[
+  {
+    "method": "bc",
+    "task": "login-user",
+    "num_demos": 50,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human",
+    "success_rate": 1.0,
+    "mean_reward": 0.9716799999999999,
+    "std_reward": 0.019169105352102367,
+    "mean_length": 3.0,
+    "num_episodes": 20
+  },
+  {
+    "method": "iql",
+    "task": "login-user",
+    "num_demos": 50,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human",
+    "success_rate": 1.0,
+    "mean_reward": 0.970895,
+    "std_reward": 0.0207805552139494,
+    "mean_length": 3.0,
+    "num_episodes": 20
+  },
+  {
+    "method": "dt",
+    "task": "login-user",
+    "num_demos": 50,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human",
+    "success_rate": 1.0,
+    "mean_reward": 0.9695200000000002,
+    "std_reward": 0.022760065905001254,
+    "mean_length": 3.0,
+    "num_episodes": 20
+  },
+  {
+    "method": "ppo",
+    "task": "login-user",
+    "num_demos": 0,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human",
+    "success_rate": 1.0,
+    "mean_reward": 0.970135,
+    "std_reward": 0.020349847051022264,
+    "mean_length": 3.0,
+    "num_episodes": 20
+  }
+]

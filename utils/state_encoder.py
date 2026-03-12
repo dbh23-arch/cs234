@@ -1,30 +1,44 @@
-"""
-DOM-based state featurization for MiniWoB++ environments.
-Extracts structured features from DOM elements rather than using raw pixels.
-"""
+"""Hand-crafted DOM feature extraction and learned state encoder."""
 
+import re
 import numpy as np
 import torch
 import torch.nn as nn
 
-
-# DOM element types we care about
+# 14 element types we track (one-hot encoded in features)
 ELEMENT_TYPES = [
     "button", "input_text", "input_checkbox", "input_radio",
     "link", "select", "option", "textarea", "label", "span",
     "div", "li", "td", "other"
 ]
 ELEMENT_TYPE_TO_IDX = {t: i for i, t in enumerate(ELEMENT_TYPES)}
+TOKEN_RE = re.compile(r"[a-z0-9]+")
 
+def _as_float(val):
+    """numpy scalars have .item(), regular floats don't"""
+    if hasattr(val, "item"):
+        val = val.item()
+    try:
+        return float(val)
+    except Exception:
+        return 0.0
+
+def _tokenize(text):
+    if not text:
+        return set()
+    return set(TOKEN_RE.findall(str(text).lower()))
 
 def classify_element(tag, type_attr=""):
-    """Classify a DOM element into one of our categories."""
     tag = tag.lower()
     if tag == "button":
         return "button"
-    elif tag == "input":
-        t = type_attr.lower() if type_attr else "text"
-        if t in ("text", "password", "email", "search", "url", "tel"):
+    elif tag == "input" or tag.startswith("input_") or tag.startswith("input "):
+        # miniwob uses both "input_text" tags and "input" with type="text"
+        if tag.startswith("input_") or tag.startswith("input "):
+            t = tag.split("_", 1)[1] if "_" in tag else tag.split(" ", 1)[1] if " " in tag else ""
+        else:
+            t = type_attr.lower() if type_attr else "text"
+        if t in ("text", "password", "email", "search", "url", "tel", ""):
             return "input_text"
         elif t == "checkbox":
             return "input_checkbox"
@@ -53,28 +67,27 @@ def classify_element(tag, type_attr=""):
     else:
         return "other"
 
-
 def extract_dom_features(dom_elements, utterance, max_elements=64):
-    """
-    Extract features from a list of DOM elements.
-
-    Each element gets a feature vector containing:
-    - Element type (one-hot, 14 dims)
-    - Normalized position (x, y, w, h - 4 dims)
-    - Is visible (1 dim)
-    - Is focused (1 dim)
-    - Text overlap with utterance (1 dim)
-    - Text length (1 dim)
-    - Is clickable (1 dim)
-    - Is input (1 dim)
-
-    Returns: (num_elements, feature_dim) array, padded/truncated to max_elements
-    """
-    feature_dim = len(ELEMENT_TYPES) + 10  # 14 + 10 = 24
+    # 14 one-hot type bits + 10 numeric features = 24 per element
+    feature_dim = len(ELEMENT_TYPES) + 10
     features = np.zeros((max_elements, feature_dim), dtype=np.float32)
     valid_mask = np.zeros(max_elements, dtype=np.float32)
 
-    utterance_words = set(utterance.lower().split()) if utterance else set()
+    utterance_words = _tokenize(utterance)
+
+    # pre-compute text anchors so we can associate labels with nearby
+    # elements that don't have their own text (e.g. bare input fields)
+    text_anchors = []
+    for elem in dom_elements[:max_elements]:
+        text = str(elem.get("text", "")).strip()
+        value = str(elem.get("value", "")).strip()
+        combined_text = (text + " " + value).strip()
+        tokens = _tokenize(combined_text)
+        if not tokens:
+            continue
+        cx = _as_float(elem.get("left", 0)) + _as_float(elem.get("width", 0)) / 2
+        cy = _as_float(elem.get("top", 0)) + _as_float(elem.get("height", 0)) / 2
+        text_anchors.append((cx, cy, combined_text, tokens))
 
     for i, elem in enumerate(dom_elements[:max_elements]):
         tag = elem.get("tag", "div")
@@ -82,38 +95,57 @@ def extract_dom_features(dom_elements, utterance, max_elements=64):
         elem_type = classify_element(tag, type_attr)
         type_idx = ELEMENT_TYPE_TO_IDX.get(elem_type, len(ELEMENT_TYPES) - 1)
 
-        # One-hot element type
+        # one-hot element type
         features[i, type_idx] = 1.0
 
-        # Normalized position (assume 160x210 MiniWoB viewport)
-        left = elem.get("left", 0) / 160.0
-        top = elem.get("top", 0) / 210.0
-        width = elem.get("width", 0) / 160.0
-        height = elem.get("height", 0) / 210.0
+        # normalized bounding box (miniwob canvas is 160x210)
+        left = np.clip(_as_float(elem.get("left", 0)) / 160.0, 0.0, 1.0)
+        top = np.clip(_as_float(elem.get("top", 0)) / 210.0, 0.0, 1.0)
+        width = np.clip(_as_float(elem.get("width", 0)) / 160.0, 0.0, 1.0)
+        height = np.clip(_as_float(elem.get("height", 0)) / 210.0, 0.0, 1.0)
         offset = len(ELEMENT_TYPES)
         features[i, offset:offset + 4] = [left, top, width, height]
 
-        # Is visible
         features[i, offset + 4] = 1.0 if elem.get("visible", True) else 0.0
-
-        # Is focused
         features[i, offset + 5] = 1.0 if elem.get("focused", False) else 0.0
 
-        # Text overlap with utterance
-        text = elem.get("text", "").lower()
-        text_words = set(text.split()) if text else set()
+        # text overlap with utterance -- key signal for which element to interact with
+        text = str(elem.get("text", "")).lower()
+        value = str(elem.get("value", "")).lower()
+        combined_text = (text + " " + value).strip()
+        text_words = _tokenize(combined_text)
+
+        # if this element has no text, try to grab it from the nearest label
+        if not text_words:
+            tag = str(elem.get("tag", "")).lower()
+            likely_label_target = (
+                tag in {"button", "label", "option", "select", "input", "textarea"} or
+                tag.startswith("input_") or tag in {"span", "div"}
+            )
+            if likely_label_target and text_anchors:
+                cx = _as_float(elem.get("left", 0)) + _as_float(elem.get("width", 0)) / 2
+                cy = _as_float(elem.get("top", 0)) + _as_float(elem.get("height", 0)) / 2
+                best = None
+                best_dist = float("inf")
+                for ax, ay, anchor_text, anchor_tokens in text_anchors:
+                    if abs(ay - cy) > 24.0:  # only look at same-row labels
+                        continue
+                    dist = (ax - cx) ** 2 + (ay - cy) ** 2
+                    if dist < best_dist:
+                        best_dist = dist
+                        best = (anchor_text, anchor_tokens)
+                if best is not None:
+                    combined_text, text_words = best
+
         overlap = len(utterance_words & text_words) / max(len(utterance_words), 1)
         features[i, offset + 6] = overlap
 
-        # Text length (normalized)
-        features[i, offset + 7] = min(len(text) / 50.0, 1.0)
+        features[i, offset + 7] = min(len(combined_text) / 50.0, 1.0)  # text length
 
-        # Is clickable
         clickable = elem_type in ("button", "link", "input_checkbox",
                                    "input_radio", "select", "option")
         features[i, offset + 8] = 1.0 if clickable else 0.0
 
-        # Is text input
         is_input = elem_type in ("input_text", "textarea")
         features[i, offset + 9] = 1.0 if is_input else 0.0
 
@@ -123,8 +155,9 @@ def extract_dom_features(dom_elements, utterance, max_elements=64):
 
 
 class StateEncoder(nn.Module):
-    """
-    Encodes DOM features + utterance into a fixed-size state vector.
+    """Encode a set of DOM element features into a fixed-size state vector.
+
+    Uses learned attention to pool over variable-length element sets.
     """
 
     def __init__(self, element_feature_dim=24, max_elements=64,
@@ -132,7 +165,6 @@ class StateEncoder(nn.Module):
         super().__init__()
         self.max_elements = max_elements
 
-        # Per-element encoder
         self.element_encoder = nn.Sequential(
             nn.Linear(element_feature_dim, embed_dim),
             nn.ReLU(),
@@ -140,12 +172,11 @@ class StateEncoder(nn.Module):
             nn.ReLU(),
         )
 
-        # Attention pooling over elements
+        # single-head attention for pooling
         self.attention = nn.Sequential(
             nn.Linear(embed_dim, 1),
         )
 
-        # Final state projection
         self.state_proj = nn.Sequential(
             nn.Linear(embed_dim, state_dim),
             nn.ReLU(),
@@ -155,30 +186,17 @@ class StateEncoder(nn.Module):
         self.state_dim = state_dim
 
     def forward(self, element_features, element_mask):
-        """
-        Args:
-            element_features: (batch, max_elements, feature_dim)
-            element_mask: (batch, max_elements) - 1 for valid, 0 for padding
-
-        Returns:
-            state: (batch, state_dim)
-            element_embeds: (batch, max_elements, embed_dim)
-        """
-        # Encode each element
         element_embeds = self.element_encoder(element_features)  # (B, N, D)
 
-        # Attention pooling
         attn_scores = self.attention(element_embeds).squeeze(-1)  # (B, N)
         attn_scores = attn_scores.masked_fill(element_mask == 0, float('-inf'))
-        attn_weights = torch.softmax(attn_scores, dim=-1)  # (B, N)
-        # Handle all-masked inputs (e.g., padded timesteps in DT sequences)
-        # softmax([-inf, ...]) = NaN, replace with 0 so pooled output is zero vector
+        attn_weights = torch.softmax(attn_scores, dim=-1)
+
+        # softmax of all -inf gives nan, fix that
         attn_weights = attn_weights.nan_to_num(0.0)
-        attn_weights = attn_weights.unsqueeze(-1)  # (B, N, 1)
+        attn_weights = attn_weights.unsqueeze(-1)
 
         pooled = (element_embeds * attn_weights).sum(dim=1)  # (B, D)
-
-        # Project to state
         state = self.state_proj(pooled)  # (B, state_dim)
 
         return state, element_embeds

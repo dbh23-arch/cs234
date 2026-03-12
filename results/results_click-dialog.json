@@ -1,0 +1,26 @@
+[
+  {
+    "method": "bc",
+    "task": "click-dialog",
+    "num_demos": 10,
+    "seed": 42,
+    "encoder_type": "dom",
+    "success_rate": 1.0,
+    "mean_reward": 0.975872,
+    "std_reward": 0.04105801281114321,
+    "mean_length": 1.0,
+    "num_episodes": 100
+  },
+  {
+    "method": "bc",
+    "task": "click-dialog",
+    "num_demos": 10,
+    "seed": 123,
+    "encoder_type": "dom",
+    "success_rate": 1.0,
+    "mean_reward": 0.9800610000000001,
+    "std_reward": 0.03104388794915998,
+    "mean_length": 1.0,
+    "num_episodes": 100
+  }
+]

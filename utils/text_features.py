@@ -1,20 +1,13 @@
-"""
-Text-based feature extraction for MiniWoB++ environments.
-Converts DOM elements + utterance into text strings for LM encoding.
+"""Convert DOM trees to text for the DistilBERT encoder.
+
+Each element gets a bracketed index like [0] button: Submit so the LM
+can learn to attend to the right elements.
 """
 
 import numpy as np
 
 
 def dom_to_text(dom_elements, utterance, max_elements=64):
-    """
-    Convert DOM elements + utterance to a single text string with
-    element boundary markers.
-
-    Returns:
-        text: str - formatted page text
-        element_char_spans: list of (start, end) character offsets per element
-    """
     parts = [f"Task: {utterance}"]
     element_char_spans = []
 
@@ -23,7 +16,7 @@ def dom_to_text(dom_elements, utterance, max_elements=64):
         text = elem.get("text", "").strip()
         elem_type = elem.get("type", "")
 
-        # Build element description
+        
         if text:
             desc = f"{tag}: {text}"
         elif elem_type:
@@ -39,31 +32,14 @@ def dom_to_text(dom_elements, utterance, max_elements=64):
 
     text = " | ".join(parts)
 
-    # Pad spans for missing elements
+    
     while len(element_char_spans) < max_elements:
         element_char_spans.append((0, 0))
 
     return text, element_char_spans
 
-
 def tokenize_page(text, element_char_spans, tokenizer, max_elements=64,
                   max_length=512):
-    """
-    Tokenize page text and compute token-level element spans.
-
-    Args:
-        text: str from dom_to_text()
-        element_char_spans: list of (start_char, end_char) per element
-        tokenizer: HuggingFace tokenizer
-        max_elements: int
-        max_length: int
-
-    Returns:
-        input_ids: (max_length,) long tensor
-        attention_mask: (max_length,) float tensor
-        element_token_spans: (max_elements, 2) long tensor - start/end token indices
-        element_mask: (max_elements,) float tensor
-    """
     encoded = tokenizer(
         text,
         max_length=max_length,
@@ -73,11 +49,11 @@ def tokenize_page(text, element_char_spans, tokenizer, max_elements=64,
         return_tensors="np",
     )
 
-    input_ids = encoded["input_ids"][0]  # (max_length,)
-    attn_mask = encoded["attention_mask"][0]  # (max_length,)
-    offsets = encoded["offset_mapping"][0]  # (max_length, 2)
+    input_ids = encoded["input_ids"][0]  
+    attn_mask = encoded["attention_mask"][0]  
+    offsets = encoded["offset_mapping"][0]  
 
-    # Map character spans to token spans
+    # map character spans to token spans so we know which tokens belong to which element
     element_token_spans = np.zeros((max_elements, 2), dtype=np.int64)
     element_mask = np.zeros(max_elements, dtype=np.float32)
 
@@ -85,7 +61,6 @@ def tokenize_page(text, element_char_spans, tokenizer, max_elements=64,
         if char_start == 0 and char_end == 0:
             continue
 
-        # Find first token that overlaps with element char span
         tok_start = None
         tok_end = None
         for t_idx, (t_start, t_end) in enumerate(offsets):
@@ -102,12 +77,7 @@ def tokenize_page(text, element_char_spans, tokenizer, max_elements=64,
 
     return input_ids, attn_mask, element_token_spans, element_mask
 
-
 def dom_elements_to_raw(dom_elements, max_elements=64):
-    """
-    Extract raw DOM element dicts for storage in demo files.
-    Strips numpy arrays to plain Python types for JSON serialization.
-    """
     raw = []
     for elem in dom_elements[:max_elements]:
         def to_float(val):

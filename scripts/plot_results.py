@@ -1,9 +1,4 @@
-"""
-Generate plots for the paper:
-- Data efficiency curves (success rate vs. num demos)
-- Per-task breakdown
-- Method comparison tables
-"""
+"""Generate figures for the paper/poster from evaluation results."""
 
 import os
 import json
@@ -14,31 +9,22 @@ import matplotlib
 matplotlib.rcParams['font.family'] = 'serif'
 matplotlib.rcParams['font.size'] = 11
 
-
 TASK_TIERS = {
     "simple": ["click-button", "click-link", "click-option",
                "click-dialog", "click-dialog-2"],
     "medium": ["login-user", "enter-text", "search-engine",
                "navigate-tree", "click-checkboxes"],
-    "hard": ["email-inbox", "choose-date", "book-flight",
-             "social-media", "use-autocomplete"],
+    "hard": ["email-inbox", "social-media", "use-autocomplete"],
 }
 
 METHOD_COLORS = {"bc": "#1f77b4", "iql": "#ff7f0e", "dt": "#2ca02c"}
 METHOD_LABELS = {"bc": "BC", "iql": "IQL", "dt": "DT"}
 
-
 def load_results(results_path):
-    """Load evaluation results."""
     with open(results_path) as f:
         return json.load(f)
 
-
 def aggregate_results(results):
-    """
-    Aggregate results by (method, task, num_demos),
-    averaging over seeds.
-    """
     aggregated = {}
     for r in results:
         key = (r["method"], r["task"], r["num_demos"])
@@ -56,12 +42,7 @@ def aggregate_results(results):
         }
     return summary
 
-
 def plot_data_efficiency(results, save_dir, tier=None):
-    """
-    Plot data efficiency curves: success rate vs. number of demos.
-    One plot per tier (simple/medium/hard) or overall.
-    """
     summary = aggregate_results(results)
 
     if tier:
@@ -118,9 +99,7 @@ def plot_data_efficiency(results, save_dir, tier=None):
     plt.close()
     print(f"Saved {filename}")
 
-
 def plot_per_task_breakdown(results, save_dir, num_demos=100):
-    """Bar chart comparing methods per task at a fixed demo count."""
     summary = aggregate_results(results)
 
     all_tasks = [t for tier_tasks in TASK_TIERS.values() for t in tier_tasks]
@@ -168,9 +147,7 @@ def plot_per_task_breakdown(results, save_dir, num_demos=100):
     plt.close()
     print(f"Saved per_task_n{num_demos}.pdf")
 
-
 def print_results_table(results):
-    """Print a formatted results table."""
     summary = aggregate_results(results)
 
     demo_sizes = sorted(set(r["num_demos"] for r in results))
@@ -196,7 +173,6 @@ def print_results_table(results):
                         print(f"  --     ", end="")
             print()
 
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--results", type=str, default="results/results.json")
@@ -207,16 +183,15 @@ def main():
 
     results = load_results(args.results)
 
-    # Generate all plots
+    
     plot_data_efficiency(results, args.save_dir)
     for tier in ["simple", "medium", "hard"]:
         plot_data_efficiency(results, args.save_dir, tier=tier)
 
     plot_per_task_breakdown(results, args.save_dir, num_demos=args.num_demos)
 
-    # Print table
+    
     print_results_table(results)
-
 
 if __name__ == "__main__":
     main()

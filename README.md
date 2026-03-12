@@ -67,7 +67,7 @@ This means the action heads in BC, IQL, and DT are identical regardless of which
 |---|---|
 | Simple | click-button, click-link, click-option, click-dialog, click-dialog-2 |
 | Medium | login-user, enter-text, search-engine, navigate-tree, click-checkboxes |
-| Hard | email-inbox, choose-date, book-flight, social-media, use-autocomplete |
+| Hard | email-inbox, social-media, use-autocomplete |
 
 ## Results
 

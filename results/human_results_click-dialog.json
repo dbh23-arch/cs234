@@ -1,0 +1,54 @@
+[
+  {
+    "method": "ppo",
+    "task": "click-dialog",
+    "num_demos": 0,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human",
+    "success_rate": 1.0,
+    "mean_reward": 0.9777950000000001,
+    "std_reward": 0.03358914221887781,
+    "mean_length": 1.0,
+    "num_episodes": 20
+  },
+  {
+    "method": "bc",
+    "task": "click-dialog",
+    "num_demos": 50,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human",
+    "success_rate": 1.0,
+    "mean_reward": 0.9865799999999998,
+    "std_reward": 0.016001456183735278,
+    "mean_length": 1.0,
+    "num_episodes": 20
+  },
+  {
+    "method": "iql",
+    "task": "click-dialog",
+    "num_demos": 50,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human",
+    "success_rate": 1.0,
+    "mean_reward": 0.98795,
+    "std_reward": 0.011315321471350243,
+    "mean_length": 1.0,
+    "num_episodes": 20
+  },
+  {
+    "method": "dt",
+    "task": "click-dialog",
+    "num_demos": 50,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human",
+    "success_rate": 1.0,
+    "mean_reward": 0.98461,
+    "std_reward": 0.015524396928705485,
+    "mean_length": 1.0,
+    "num_episodes": 20
+  }
+]

@@ -1,21 +1,12 @@
-"""
-Implicit Q-Learning (IQL) for offline RL.
-Based on Kostrikov et al., 2022 - "Offline RL with Implicit Q-Learning"
-
-Key idea: Avoids querying out-of-distribution actions by using expectile
-regression on the value function, implicitly performing policy improvement.
-"""
-
 import copy
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from utils.state_encoder import StateEncoder
-from utils.text_state_encoder import TextStateEncoder
 
 
 class QNetwork(nn.Module):
-    """Q-function: Q(s, a) where a = (action_type, element_idx)."""
+    """Q-network that outputs separate Q-values for action type and element."""
 
     def __init__(self, state_dim, hidden_dim, max_elements, num_action_types=2,
                  embed_dim=64):
@@ -44,10 +35,7 @@ class QNetwork(nn.Module):
 
         return at_q, el_q
 
-
 class ValueNetwork(nn.Module):
-    """Value function V(s)."""
-
     def __init__(self, state_dim, hidden_dim):
         super().__init__()
         self.net = nn.Sequential(
@@ -61,16 +49,18 @@ class ValueNetwork(nn.Module):
     def forward(self, state):
         return self.net(state).squeeze(-1)
 
-
 class IQLAgent(nn.Module):
-    """
-    IQL Agent for web navigation.
-    Supports both DOM (hand-crafted) and text (DistilBERT) encoders.
+    """Implicit Q-Learning with optional CQL regularization.
+
+    Based on Kostrikov et al. 2021 (IQL) + Kumar et al. 2020 (CQL).
+    We decompose Q into action_type Q + element Q since our action space
+    is factored (pick type, then pick element).
     """
 
     def __init__(self, state_dim=256, hidden_dim=256, max_elements=64,
                  num_action_types=2, element_feature_dim=24,
                  discount=0.99, tau=0.7, beta=3.0, target_update_rate=0.005,
+                 cql_alpha=0.0, cql_temperature=1.0,
                  encoder_type="dom", freeze_lm=True):
         super().__init__()
 
@@ -78,11 +68,13 @@ class IQLAgent(nn.Module):
         self.tau = tau
         self.beta = beta
         self.target_update_rate = target_update_rate
+        self.cql_alpha = cql_alpha
+        self.cql_temperature = cql_temperature
         self.max_elements = max_elements
         self.encoder_type = encoder_type
 
-        # State encoder
         if encoder_type == "text":
+            from utils.text_state_encoder import TextStateEncoder
             self.state_encoder = TextStateEncoder(
                 state_dim=state_dim,
                 embed_dim=64,
@@ -98,20 +90,16 @@ class IQLAgent(nn.Module):
 
         embed_dim = self.state_encoder.embed_dim
 
-        # Q-networks (twin Q for stability)
         self.q1 = QNetwork(state_dim, hidden_dim, max_elements, num_action_types,
                            embed_dim)
         self.q2 = QNetwork(state_dim, hidden_dim, max_elements, num_action_types,
                            embed_dim)
 
-        # Target Q-networks
         self.q1_target = copy.deepcopy(self.q1)
         self.q2_target = copy.deepcopy(self.q2)
 
-        # Value network
         self.value = ValueNetwork(state_dim, hidden_dim)
 
-        # Policy network (for action extraction)
         self.policy_action_type = nn.Sequential(
             nn.Linear(state_dim, hidden_dim),
             nn.ReLU(),
@@ -125,7 +113,6 @@ class IQLAgent(nn.Module):
         )
 
     def encode_state_from_batch(self, batch, prefix=""):
-        """Encode state from batch dict, using appropriate encoder."""
         if self.encoder_type == "text":
             p = prefix
             return self.state_encoder(
@@ -140,11 +127,9 @@ class IQLAgent(nn.Module):
             )
 
     def encode_state(self, element_features, element_mask):
-        """Encode state from DOM features (backward compatible)."""
         return self.state_encoder(element_features, element_mask)
 
     def get_action(self, element_features, element_mask):
-        """Get action for a single observation. DOM encoder."""
         with torch.no_grad():
             ef = element_features.unsqueeze(0)
             em = element_mask.unsqueeze(0)
@@ -164,7 +149,6 @@ class IQLAgent(nn.Module):
 
     def get_action_text(self, input_ids, attention_mask, element_token_spans,
                         element_mask):
-        """Get action for a single observation. Text encoder."""
         with torch.no_grad():
             state, element_embeds = self.state_encoder(
                 input_ids.unsqueeze(0), attention_mask.unsqueeze(0),
@@ -183,15 +167,12 @@ class IQLAgent(nn.Module):
         return {"action_type_idx": action_type, "element_idx": element_idx}
 
     def _get_element_mask(self, batch, prefix=""):
-        """Get the element mask from batch."""
         if self.encoder_type == "text":
             return batch[f"{prefix}element_mask"]
         else:
             return batch[f"{prefix}state_mask"] if prefix == "" else batch["next_state_mask"]
 
     def compute_loss(self, batch):
-        """Compute IQL losses."""
-        # Encode current and next states
         elem_mask = self._get_element_mask(batch)
         next_elem_mask = self._get_element_mask(batch, "next_")
 
@@ -219,7 +200,6 @@ class IQLAgent(nn.Module):
         rewards = batch["reward"]
         dones = batch["done"]
 
-        # --- Value loss (expectile regression) ---
         with torch.no_grad():
             at_q1, el_q1 = self.q1_target(state, elem_embeds, elem_mask)
             at_q2, el_q2 = self.q2_target(state, elem_embeds, elem_mask)
@@ -236,7 +216,6 @@ class IQLAgent(nn.Module):
         weight = torch.where(diff > 0, self.tau, 1 - self.tau)
         value_loss = (weight * diff.pow(2)).mean()
 
-        # --- Q loss (Bellman backup) ---
         with torch.no_grad():
             next_v = self.value(next_state)
             q_backup = rewards + (1 - dones) * self.discount * next_v
@@ -249,9 +228,27 @@ class IQLAgent(nn.Module):
         q2_pred = at_q2.gather(1, action_types.unsqueeze(1)).squeeze(1) + \
                   el_q2.gather(1, element_idxs.unsqueeze(1)).squeeze(1)
 
-        q_loss = F.mse_loss(q1_pred, q_backup) + F.mse_loss(q2_pred, q_backup)
+        q_bellman_loss = F.mse_loss(q1_pred, q_backup) + F.mse_loss(q2_pred, q_backup)
 
-        # --- Policy loss (advantage-weighted regression) ---
+        # CQL penalty: logsumexp(Q) - Q(data) pushes down Q for unseen actions
+        temp = max(self.cql_temperature, 1e-6)
+        # can't use -inf here because logsumexp would give nan
+        finite_neg = torch.tensor(-1e9, device=state.device, dtype=state.dtype)
+        safe_el_q1 = torch.where(elem_mask > 0, el_q1, finite_neg)
+        safe_el_q2 = torch.where(elem_mask > 0, el_q2, finite_neg)
+        cql1 = (
+            temp * torch.logsumexp(at_q1 / temp, dim=-1) +
+            temp * torch.logsumexp(safe_el_q1 / temp, dim=-1) -
+            q1_pred
+        ).mean()
+        cql2 = (
+            temp * torch.logsumexp(at_q2 / temp, dim=-1) +
+            temp * torch.logsumexp(safe_el_q2 / temp, dim=-1) -
+            q2_pred
+        ).mean()
+        cql_loss = cql1 + cql2
+        q_loss = q_bellman_loss + self.cql_alpha * cql_loss
+
         with torch.no_grad():
             advantage = q_target - v
             exp_advantage = torch.exp(self.beta * advantage).clamp(max=100.0)
@@ -276,6 +273,8 @@ class IQLAgent(nn.Module):
             "loss": total_loss,
             "value_loss": value_loss.item(),
             "q_loss": q_loss.item(),
+            "q_bellman_loss": q_bellman_loss.item(),
+            "cql_loss": cql_loss.item(),
             "policy_loss": policy_loss.item(),
             "v_mean": v.mean().item(),
             "q_mean": q1_pred.mean().item(),
@@ -283,7 +282,6 @@ class IQLAgent(nn.Module):
         }
 
     def update_targets(self):
-        """Soft update target networks."""
         for p, tp in zip(self.q1.parameters(), self.q1_target.parameters()):
             tp.data.copy_(self.target_update_rate * p.data +
                          (1 - self.target_update_rate) * tp.data)

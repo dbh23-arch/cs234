@@ -1,0 +1,18 @@
+Device: mps
+
+============================================================
+PPO | Task: click-button | Seed: 42
+============================================================
+  Batch 10/100: avg_reward=-0.034 (15 eps)
+  Batch 20/100: avg_reward=0.589 (16 eps)
+  Batch 30/100: avg_reward=0.237 (19 eps)
+Traceback (most recent call last):
+  File "/Users/Andrew/Downloads/CS234 Reinforcement Learning/project/code/scripts/ppo_full_train.py", line 189, in <module>
+    update_policy(agent, opt_pi, af, am, aat, aei, adv, olp, eps_clip, device,
+  File "/Users/Andrew/Downloads/CS234 Reinforcement Learning/project/code/models/ppo.py", line 131, in update_policy
+    log_prob_actions = at_dist.log_prob(action_types_t) + el_dist.log_prob(element_idxs_t)
+  File "/Users/Andrew/miniconda3/envs/cs234/lib/python3.10/site-packages/torch/distributions/categorical.py", line 152, in log_prob
+    self._validate_sample(value)
+  File "/Users/Andrew/miniconda3/envs/cs234/lib/python3.10/site-packages/torch/distributions/distribution.py", line 308, in _validate_sample
+    raise ValueError(
+ValueError: Value is not broadcastable with batch_shape+event_shape: torch.Size([127]) vs torch.Size([128]).

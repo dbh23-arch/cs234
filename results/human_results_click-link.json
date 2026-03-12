@@ -1,0 +1,54 @@
+[
+  {
+    "method": "ppo",
+    "task": "click-link",
+    "num_demos": 0,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human",
+    "success_rate": 0.0,
+    "mean_reward": 0.0,
+    "std_reward": 0.0,
+    "mean_length": 20.0,
+    "num_episodes": 20
+  },
+  {
+    "method": "bc",
+    "task": "click-link",
+    "num_demos": 50,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human",
+    "success_rate": 0.4,
+    "mean_reward": -0.20309999999999997,
+    "std_reward": 0.9760018130106112,
+    "mean_length": 1.0,
+    "num_episodes": 20
+  },
+  {
+    "method": "iql",
+    "task": "click-link",
+    "num_demos": 50,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human",
+    "success_rate": 0.75,
+    "mean_reward": 0.4933850000000001,
+    "std_reward": 0.8622189039188365,
+    "mean_length": 1.0,
+    "num_episodes": 20
+  },
+  {
+    "method": "dt",
+    "task": "click-link",
+    "num_demos": 50,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human",
+    "success_rate": 0.25,
+    "mean_reward": -0.5022599999999999,
+    "std_reward": 0.8621138082643148,
+    "mean_length": 1.0,
+    "num_episodes": 20
+  }
+]

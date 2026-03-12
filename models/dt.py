@@ -1,22 +1,10 @@
-"""
-Decision Transformer for offline RL on web navigation.
-Based on Chen et al., 2021 - "Decision Transformer: RL via Sequence Modeling"
-
-Frames offline RL as sequence modeling: given desired return, generate actions
-by attending over trajectory history.
-"""
-
 import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from utils.state_encoder import StateEncoder
-from utils.text_state_encoder import TextStateEncoder
-
 
 class CausalSelfAttention(nn.Module):
-    """Causal self-attention block."""
-
     def __init__(self, embed_dim, n_heads, context_length, dropout=0.1):
         super().__init__()
         assert embed_dim % n_heads == 0
@@ -57,10 +45,7 @@ class CausalSelfAttention(nn.Module):
         out = (attn @ v).transpose(1, 2).reshape(B, T, D)
         return self.proj(out)
 
-
 class TransformerBlock(nn.Module):
-    """Transformer block with pre-norm."""
-
     def __init__(self, embed_dim, n_heads, context_length, dropout=0.1):
         super().__init__()
         self.ln1 = nn.LayerNorm(embed_dim)
@@ -78,11 +63,11 @@ class TransformerBlock(nn.Module):
         x = x + self.mlp(self.ln2(x))
         return x
 
-
 class DecisionTransformerAgent(nn.Module):
-    """
-    Decision Transformer for web navigation.
-    Supports both DOM (hand-crafted) and text (DistilBERT) encoders.
+    """Decision Transformer (Chen et al. 2021) adapted for web navigation.
+
+    Sequence is interleaved (return, state, action) triples. We predict
+    actions conditioned on desired return-to-go.
     """
 
     def __init__(self, state_dim=256, embed_dim=128, n_layers=4, n_heads=4,
@@ -96,8 +81,8 @@ class DecisionTransformerAgent(nn.Module):
         self.max_elements = max_elements
         self.encoder_type = encoder_type
 
-        # State encoder
         if encoder_type == "text":
+            from utils.text_state_encoder import TextStateEncoder
             self.state_encoder = TextStateEncoder(
                 state_dim=state_dim,
                 embed_dim=64,
@@ -111,20 +96,16 @@ class DecisionTransformerAgent(nn.Module):
                 state_dim=state_dim,
             )
 
-        # Embeddings for each token type
         self.state_embed = nn.Linear(state_dim, embed_dim)
         self.return_embed = nn.Linear(1, embed_dim)
         self.action_type_embed = nn.Embedding(num_action_types, embed_dim)
         self.element_embed = nn.Embedding(max_elements, embed_dim)
         self.action_embed = nn.Linear(2 * embed_dim, embed_dim)
 
-        # Timestep embedding
         self.timestep_embed = nn.Embedding(max_timestep, embed_dim)
 
-        # Positional embedding for sequence position
         self.pos_embed = nn.Embedding(3 * context_length, embed_dim)
 
-        # Transformer
         self.blocks = nn.ModuleList([
             TransformerBlock(embed_dim, n_heads, context_length, dropout)
             for _ in range(n_layers)
@@ -133,12 +114,10 @@ class DecisionTransformerAgent(nn.Module):
         self.ln_final = nn.LayerNorm(embed_dim)
         self.dropout = nn.Dropout(dropout)
 
-        # Action prediction heads
         self.action_type_head = nn.Linear(embed_dim, num_action_types)
         self.element_head = nn.Linear(embed_dim, max_elements)
 
     def _encode_states_dom(self, state_features, state_masks):
-        """Encode states using DOM encoder. state_features: (B, K, N, F)."""
         B, K = state_features.shape[:2]
         flat_f = state_features.view(B * K, self.max_elements, -1)
         flat_m = state_masks.view(B * K, self.max_elements)
@@ -146,8 +125,6 @@ class DecisionTransformerAgent(nn.Module):
         return encoded.view(B, K, -1)
 
     def _encode_states_text(self, input_ids, text_attn_mask, elem_spans, elem_masks):
-        """Encode states using text encoder.
-        All inputs: (B, K, ...) - need to flatten K dimension."""
         B, K = input_ids.shape[:2]
         flat_ids = input_ids.view(B * K, -1)
         flat_attn = text_attn_mask.view(B * K, -1)
@@ -158,7 +135,6 @@ class DecisionTransformerAgent(nn.Module):
 
     def _sequence_forward(self, state_encoded, action_types, element_idxs,
                           returns_to_go, timesteps, attention_mask):
-        """Shared forward pass from encoded states."""
         B, K = returns_to_go.shape
 
         state_tokens = self.state_embed(state_encoded)
@@ -203,7 +179,6 @@ class DecisionTransformerAgent(nn.Module):
 
     def forward(self, state_features, state_masks, action_types, element_idxs,
                 returns_to_go, timesteps, attention_mask=None):
-        """DOM encoder forward (backward compatible)."""
         state_encoded = self._encode_states_dom(state_features, state_masks)
         return self._sequence_forward(
             state_encoded, action_types, element_idxs,
@@ -213,7 +188,6 @@ class DecisionTransformerAgent(nn.Module):
     def forward_text(self, input_ids, text_attention_mask, element_token_spans,
                      element_masks, action_types, element_idxs,
                      returns_to_go, timesteps, attention_mask=None):
-        """Text encoder forward."""
         state_encoded = self._encode_states_text(
             input_ids, text_attention_mask, element_token_spans, element_masks,
         )
@@ -223,10 +197,9 @@ class DecisionTransformerAgent(nn.Module):
         )
 
     def get_action(self, state_features, state_mask,
-                   past_states=None, past_actions=None,
+                   past_states=None, past_state_masks=None, past_actions=None,
                    past_returns=None, past_timesteps=None,
                    target_return=1.0, current_timestep=0):
-        """Get action for a single step. DOM encoder."""
         with torch.no_grad():
             device = next(self.parameters()).device
 
@@ -243,7 +216,11 @@ class DecisionTransformerAgent(nn.Module):
                 start = max(0, len(past_states) + 1 - K)
 
                 sf_list = past_states[start:] + [state_features]
-                sm_list = [torch.ones(self.max_elements)] * len(sf_list)
+                if past_state_masks is None:
+                    sm_hist = [torch.ones_like(state_mask) for _ in past_states[start:]]
+                else:
+                    sm_hist = past_state_masks[start:]
+                sm_list = sm_hist + [state_mask]
                 sf = torch.stack(sf_list).unsqueeze(0).to(device)
                 sm = torch.stack(sm_list).unsqueeze(0).to(device)
 
@@ -267,7 +244,6 @@ class DecisionTransformerAgent(nn.Module):
         return {"action_type_idx": action_type, "element_idx": element_idx}
 
     def compute_loss(self, batch):
-        """Compute DT loss on a batch of sequences."""
         if self.encoder_type == "text":
             at_preds, el_preds = self.forward_text(
                 batch["input_ids"],

@@ -1,0 +1,10 @@
+{
+  "human_ppo_login-user_n0_s42": {
+    "method": "ppo",
+    "task": "login-user",
+    "num_demos": 0,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human"
+  }
+}

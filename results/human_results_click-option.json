@@ -1,0 +1,54 @@
+[
+  {
+    "method": "bc",
+    "task": "click-option",
+    "num_demos": 50,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human",
+    "success_rate": 1.0,
+    "mean_reward": 0.9795499999999999,
+    "std_reward": 0.013114743611676152,
+    "mean_length": 2.0,
+    "num_episodes": 20
+  },
+  {
+    "method": "iql",
+    "task": "click-option",
+    "num_demos": 50,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human",
+    "success_rate": 1.0,
+    "mean_reward": 0.9802,
+    "std_reward": 0.012143640310878782,
+    "mean_length": 2.0,
+    "num_episodes": 20
+  },
+  {
+    "method": "dt",
+    "task": "click-option",
+    "num_demos": 50,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human",
+    "success_rate": 1.0,
+    "mean_reward": 0.9799750000000002,
+    "std_reward": 0.01277383556336938,
+    "mean_length": 2.0,
+    "num_episodes": 20
+  },
+  {
+    "method": "ppo",
+    "task": "click-option",
+    "num_demos": 0,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human",
+    "success_rate": 1.0,
+    "mean_reward": 0.980185,
+    "std_reward": 0.01223234544149239,
+    "mean_length": 2.0,
+    "num_episodes": 20
+  }
+]

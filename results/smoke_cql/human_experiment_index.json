@@ -1,0 +1,10 @@
+{
+  "human_iql_click-button_n10_s42": {
+    "method": "iql",
+    "task": "click-button",
+    "num_demos": 10,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human"
+  }
+}

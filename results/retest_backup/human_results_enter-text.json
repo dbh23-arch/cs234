@@ -1,0 +1,41 @@
+[
+  {
+    "method": "bc",
+    "task": "enter-text",
+    "num_demos": 50,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human",
+    "success_rate": 0.0,
+    "mean_reward": 0.0,
+    "std_reward": 0.0,
+    "mean_length": 20.0,
+    "num_episodes": 50
+  },
+  {
+    "method": "iql",
+    "task": "enter-text",
+    "num_demos": 50,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human",
+    "success_rate": 0.0,
+    "mean_reward": -0.48,
+    "std_reward": 0.49959983987187184,
+    "mean_length": 12.6,
+    "num_episodes": 50
+  },
+  {
+    "method": "dt",
+    "task": "enter-text",
+    "num_demos": 50,
+    "seed": 42,
+    "encoder_type": "dom",
+    "source": "human",
+    "success_rate": 0.98,
+    "mean_reward": 0.9436140000000001,
+    "std_reward": 0.13707333804938143,
+    "mean_length": 3.34,
+    "num_episodes": 50
+  }
+]
