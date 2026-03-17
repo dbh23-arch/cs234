@@ -14,35 +14,6 @@ Each method is evaluated with two state encoders:
 - **DOM encoder** -- hand-crafted 24-dim features per element (position, size, tag type, text similarity)
 - **Text encoder** -- frozen DistilBERT that processes page text, producing contextual embeddings
 
-## Project Structure
-
-```
-code/
-├── train.py                    # Main training script
-├── evaluate.py                 # Evaluate trained agents in MiniWoB++
-├── configs/
-│   └── default.yaml            # Hyperparameters and task lists
-├── models/
-│   ├── bc.py                   # Behavioral Cloning agent
-│   ├── iql.py                  # Implicit Q-Learning agent
-│   └── dt.py                   # Decision Transformer agent
-├── utils/
-│   ├── state_encoder.py        # DOM feature encoder (hand-crafted)
-│   ├── text_state_encoder.py   # DistilBERT text encoder
-│   ├── text_features.py        # DOM-to-text conversion and tokenization
-│   ├── dataset.py              # PyTorch datasets for all encoder types
-│   └── env_wrapper.py          # Environment utilities
-├── scripts/
-│   ├── collect_demos.py        # Collect demonstration data via heuristic policies
-│   ├── watch_agent.py          # Watch a trained agent play in the browser
-│   └── plot_results.py         # Generate result plots
-├── data/demos/                 # Collected demonstration trajectories (JSON)
-├── results/
-│   ├── models/                 # Saved model checkpoints (.pt)
-│   └── results.json            # Evaluation results
-└── requirements.txt
-```
-
 ## Methods
 
 ### Behavioral Cloning (BC)
