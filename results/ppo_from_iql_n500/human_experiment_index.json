@@ -1,0 +1,10 @@
+{
+  "human_ppo_click-button_n0_s456": {
+    "method": "ppo",
+    "task": "click-button",
+    "num_demos": 0,
+    "seed": 456,
+    "encoder_type": "dom",
+    "source": "human"
+  }
+}

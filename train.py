@@ -293,6 +293,9 @@ def train_ppo(config, task_name, seed, device):
         max_elements=config["state"]["max_dom_elements"],
     ).to(device)
 
+    if pretrain_checkpoint is not None and pretrain_method is not None:
+        load_pretrain_weights(agent, pretrain_checkpoint, pretrain_method)
+
     policy_params = (list(agent.state_encoder.parameters()) +
                      list(agent.action_type_head.parameters()) +
                      list(agent.element_score.parameters()))
@@ -408,16 +411,78 @@ def train_ppo(config, task_name, seed, device):
 # --- Main ---
 
 TRAIN_FNS = {"bc": train_bc, "iql": train_iql, "dt": train_dt}
+def load_pretrain_weights(ppo_agent, checkpoint_path, pretrain_method):
+    sd = torch.load(checkpoint_path, map_location="cpu")
+    ppo_sd = ppo_agent.state_dict()
+    for k in sd:
+        if k.startswith("state_encoder."):
+            ppo_sd[k] = sd[k]
+    if pretrain_method == "bc":
+        for k in ("action_type_head.0.weight", "action_type_head.0.bias",
+                  "action_type_head.2.weight", "action_type_head.2.bias",
+                  "element_score.0.weight", "element_score.0.bias",
+                  "element_score.2.weight", "element_score.2.bias"):
+            if k in sd:
+                ppo_sd[k] = sd[k]
+    elif pretrain_method == "iql":
+        key_map = {
+            "policy_action_type.0.weight": "action_type_head.0.weight",
+            "policy_action_type.0.bias": "action_type_head.0.bias",
+            "policy_action_type.2.weight": "action_type_head.2.weight",
+            "policy_action_type.2.bias": "action_type_head.2.bias",
+            "policy_element.0.weight": "element_score.0.weight",
+            "policy_element.0.bias": "element_score.0.bias",
+            "policy_element.2.weight": "element_score.2.weight",
+            "policy_element.2.bias": "element_score.2.bias",
+        }
+        for iql_k, ppo_k in key_map.items():
+            if iql_k in sd:
+                ppo_sd[ppo_k] = sd[iql_k]
+    ppo_agent.load_state_dict(ppo_sd)
+
+def run_experiment(config, method, task_name, num_demos, seed, device,
+                   encoder_type="dom", source="human",
+                   pretrain_checkpoint=None, pretrain_method=None):
+    enc_label = f" [{encoder_type.upper()}]" if encoder_type != "dom" else ""
+    src_label = f" [{source}]"
+    print(f"\n{'='*60}")
+    print(f"Method: {method.upper()}{enc_label}{src_label} | Task: {task_name} | "
+          f"Demos: {num_demos} | Seed: {seed}")
+    print(f"{'='*60}")
+
+    train_fn = TRAIN_FNS[method]
+    if method == "ppo":
+        agent = train_fn(config, task_name, num_demos, seed, device, encoder_type,
+                         pretrain_checkpoint=pretrain_checkpoint,
+                         pretrain_method=pretrain_method)
+    else:
+        agent = train_fn(config, task_name, num_demos, seed, device,
+                         encoder_type, source=source)
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="configs/default.yaml")
-    parser.add_argument("--method", default="bc", choices=["bc", "iql", "dt", "ppo", "all"])
-    parser.add_argument("--task", default=None, help="Single task (default: all)")
-    parser.add_argument("--num_demos", type=int, default=None, help="Single demo count")
-    parser.add_argument("--seed", type=int, default=None)
-    parser.add_argument("--save_dir", default="results")
+    parser.add_argument("--config", type=str, default="configs/default.yaml")
+    parser.add_argument("--method", type=str, default="bc",
+                        choices=["bc", "iql", "dt", "ppo", "all"])
+    parser.add_argument("--task", type=str, default=None,
+                        help="Single task to train on (default: all)")
+    parser.add_argument("--num_demos", type=int, default=None,
+                        help="Single demo count (default: sweep all)")
+    parser.add_argument("--seed", type=int, default=None,
+                        help="Single seed (default: sweep all)")
+    parser.add_argument("--save_dir", type=str, default="results")
+    parser.add_argument("--encoder_type", type=str, default="dom",
+                        choices=["dom", "text"],
+                        help="State encoder type (dom=hand-crafted, text=DistilBERT)")
+    parser.add_argument("--source", type=str, default="human",
+                        choices=["human", "heuristic"],
+                        help="Demo source: human (Stanford) or heuristic (scripted)")
+    parser.add_argument("--pretrain_checkpoint", type=str, default=None,
+                        help="Path to BC or IQL checkpoint to warm-start PPO policy")
+    parser.add_argument("--pretrain_method", type=str, default=None,
+                        choices=["bc", "iql"],
+                        help="Method that produced the pretrain checkpoint")
     args = parser.parse_args()
 
     with open(args.config) as f:

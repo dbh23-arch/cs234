@@ -1,0 +1,10 @@
+{
+  "human_ppo_click-link_n0_s123": {
+    "method": "ppo",
+    "task": "click-link",
+    "num_demos": 0,
+    "seed": 123,
+    "encoder_type": "dom",
+    "source": "human"
+  }
+}
