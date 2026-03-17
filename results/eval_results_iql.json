@@ -1,0 +1,498 @@
+{
+  "iql": {
+    "click-button": [
+      {
+        "checkpoint": "iql_click-button_n10_s123.pt",
+        "success_rate": 0.44
+      },
+      {
+        "checkpoint": "iql_click-button_n10_s42.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-button_n10_s456.pt",
+        "success_rate": 0.98
+      },
+      {
+        "checkpoint": "iql_click-button_n25_s123.pt",
+        "success_rate": 0.36
+      },
+      {
+        "checkpoint": "iql_click-button_n25_s42.pt",
+        "success_rate": 0.36
+      },
+      {
+        "checkpoint": "iql_click-button_n25_s456.pt",
+        "success_rate": 0.5
+      },
+      {
+        "checkpoint": "iql_click-button_n50_s123.pt",
+        "success_rate": 0.34
+      },
+      {
+        "checkpoint": "iql_click-button_n50_s42.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-button_n50_s456.pt",
+        "success_rate": 0.96
+      }
+    ],
+    "click-link": [
+      {
+        "checkpoint": "iql_click-link_n10_s123.pt",
+        "success_rate": 0.96
+      },
+      {
+        "checkpoint": "iql_click-link_n10_s42.pt",
+        "success_rate": 0.04
+      },
+      {
+        "checkpoint": "iql_click-link_n10_s456.pt",
+        "success_rate": 0.1
+      },
+      {
+        "checkpoint": "iql_click-link_n25_s123.pt",
+        "success_rate": 0.02
+      },
+      {
+        "checkpoint": "iql_click-link_n25_s42.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-link_n25_s456.pt",
+        "success_rate": 0.24
+      },
+      {
+        "checkpoint": "iql_click-link_n50_s123.pt",
+        "success_rate": 0.98
+      },
+      {
+        "checkpoint": "iql_click-link_n50_s42.pt",
+        "success_rate": 0.2
+      },
+      {
+        "checkpoint": "iql_click-link_n50_s456.pt",
+        "success_rate": 0.04
+      }
+    ],
+    "click-option": [
+      {
+        "checkpoint": "iql_click-option_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-option_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-option_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-option_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-option_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-option_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-option_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-option_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-option_n50_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "click-dialog": [
+      {
+        "checkpoint": "iql_click-dialog_n10_s123.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-dialog_n10_s42.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-dialog_n10_s456.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-dialog_n25_s123.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-dialog_n25_s42.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-dialog_n25_s456.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-dialog_n50_s123.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-dialog_n50_s42.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-dialog_n50_s456.pt",
+        "success_rate": 1.0
+      }
+    ],
+    "click-dialog-2": [
+      {
+        "checkpoint": "iql_click-dialog-2_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-dialog-2_n10_s42.pt",
+        "success_rate": 0.3
+      },
+      {
+        "checkpoint": "iql_click-dialog-2_n10_s456.pt",
+        "success_rate": 0.32
+      },
+      {
+        "checkpoint": "iql_click-dialog-2_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-dialog-2_n25_s42.pt",
+        "success_rate": 0.7
+      },
+      {
+        "checkpoint": "iql_click-dialog-2_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-dialog-2_n50_s123.pt",
+        "success_rate": 0.4
+      },
+      {
+        "checkpoint": "iql_click-dialog-2_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-dialog-2_n50_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "login-user": [
+      {
+        "checkpoint": "iql_login-user_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_login-user_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_login-user_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_login-user_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_login-user_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_login-user_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_login-user_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_login-user_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_login-user_n25_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "click-checkboxes": [
+      {
+        "checkpoint": "iql_click-checkboxes_n10_s123.pt",
+        "success_rate": 0.44
+      },
+      {
+        "checkpoint": "iql_click-checkboxes_n25_s42.pt",
+        "success_rate": 0.38
+      },
+      {
+        "checkpoint": "iql_click-checkboxes_n50_s456.pt",
+        "success_rate": 0.34
+      },
+      {
+        "checkpoint": "iql_click-checkboxes_n10_s42.pt",
+        "success_rate": 0.48
+      },
+      {
+        "checkpoint": "iql_click-checkboxes_n25_s456.pt",
+        "success_rate": 0.34
+      },
+      {
+        "checkpoint": "iql_click-checkboxes_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-checkboxes_n50_s123.pt",
+        "success_rate": 0.5
+      },
+      {
+        "checkpoint": "iql_click-checkboxes_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-checkboxes_n50_s42.pt",
+        "success_rate": 0.34
+      }
+    ],
+    "email-inbox": [
+      {
+        "checkpoint": "iql_email-inbox_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_email-inbox_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_email-inbox_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_email-inbox_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_email-inbox_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_email-inbox_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_email-inbox_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_email-inbox_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_email-inbox_n50_s123.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "enter-text": [
+      {
+        "checkpoint": "iql_enter-text_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_enter-text_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_enter-text_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_enter-text_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_enter-text_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_enter-text_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_enter-text_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_enter-text_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_enter-text_n25_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "navigate-tree": [
+      {
+        "checkpoint": "iql_navigate-tree_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_navigate-tree_n50_s42.pt",
+        "success_rate": 0.18
+      },
+      {
+        "checkpoint": "iql_navigate-tree_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_navigate-tree_n25_s42.pt",
+        "success_rate": 0.26
+      },
+      {
+        "checkpoint": "iql_navigate-tree_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_navigate-tree_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_navigate-tree_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_navigate-tree_n10_s456.pt",
+        "success_rate": 0.02
+      },
+      {
+        "checkpoint": "iql_navigate-tree_n50_s123.pt",
+        "success_rate": 0.68
+      }
+    ],
+    "search-engine": [
+      {
+        "checkpoint": "iql_search-engine_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_search-engine_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_search-engine_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_search-engine_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_search-engine_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_search-engine_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_search-engine_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_search-engine_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_search-engine_n25_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "social-media": [
+      {
+        "checkpoint": "iql_social-media_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_social-media_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_social-media_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_social-media_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_social-media_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_social-media_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_social-media_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_social-media_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_social-media_n50_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "use-autocomplete": [
+      {
+        "checkpoint": "iql_use-autocomplete_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_use-autocomplete_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_use-autocomplete_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_use-autocomplete_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_use-autocomplete_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_use-autocomplete_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_use-autocomplete_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_use-autocomplete_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_use-autocomplete_n50_s42.pt",
+        "success_rate": 0.0
+      }
+    ]
+  }
+}

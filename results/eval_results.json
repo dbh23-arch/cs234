@@ -1,0 +1,1674 @@
+{
+  "bc": {
+    "click-button": [
+      {
+        "checkpoint": "bc_click-button_n10_s123.pt",
+        "success_rate": 0.26
+      },
+      {
+        "checkpoint": "bc_click-button_n10_s42.pt",
+        "success_rate": 0.92
+      },
+      {
+        "checkpoint": "bc_click-button_n10_s456.pt",
+        "success_rate": 0.3
+      },
+      {
+        "checkpoint": "bc_click-button_n25_s123.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "bc_click-button_n25_s42.pt",
+        "success_rate": 0.4
+      },
+      {
+        "checkpoint": "bc_click-button_n25_s456.pt",
+        "success_rate": 0.98
+      },
+      {
+        "checkpoint": "bc_click-button_n50_s123.pt",
+        "success_rate": 0.46
+      },
+      {
+        "checkpoint": "bc_click-button_n50_s42.pt",
+        "success_rate": 0.34
+      },
+      {
+        "checkpoint": "bc_click-button_n50_s456.pt",
+        "success_rate": 0.48
+      }
+    ],
+    "click-link": [
+      {
+        "checkpoint": "bc_click-link_n10_s123.pt",
+        "success_rate": 0.46
+      },
+      {
+        "checkpoint": "bc_click-link_n10_s42.pt",
+        "success_rate": 0.08
+      },
+      {
+        "checkpoint": "bc_click-link_n10_s456.pt",
+        "success_rate": 0.66
+      },
+      {
+        "checkpoint": "bc_click-link_n25_s123.pt",
+        "success_rate": 0.04
+      },
+      {
+        "checkpoint": "bc_click-link_n25_s42.pt",
+        "success_rate": 0.4
+      },
+      {
+        "checkpoint": "bc_click-link_n25_s456.pt",
+        "success_rate": 0.62
+      },
+      {
+        "checkpoint": "bc_click-link_n50_s123.pt",
+        "success_rate": 0.26
+      },
+      {
+        "checkpoint": "bc_click-link_n50_s42.pt",
+        "success_rate": 0.32
+      },
+      {
+        "checkpoint": "bc_click-link_n50_s456.pt",
+        "success_rate": 0.1
+      }
+    ],
+    "click-option": [
+      {
+        "checkpoint": "bc_click-option_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_click-option_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_click-option_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_click-option_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_click-option_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_click-option_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_click-option_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_click-option_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_click-option_n50_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "click-dialog": [
+      {
+        "checkpoint": "bc_click-dialog_n10_s123.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "bc_click-dialog_n10_s42.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "bc_click-dialog_n10_s456.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "bc_click-dialog_n25_s123.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "bc_click-dialog_n25_s42.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "bc_click-dialog_n25_s456.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "bc_click-dialog_n50_s123.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "bc_click-dialog_n50_s42.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "bc_click-dialog_n50_s456.pt",
+        "success_rate": 1.0
+      }
+    ],
+    "click-dialog-2": [
+      {
+        "checkpoint": "bc_click-dialog-2_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_click-dialog-2_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_click-dialog-2_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_click-dialog-2_n25_s123.pt",
+        "success_rate": 0.42
+      },
+      {
+        "checkpoint": "bc_click-dialog-2_n25_s42.pt",
+        "success_rate": 0.36
+      },
+      {
+        "checkpoint": "bc_click-dialog-2_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_click-dialog-2_n50_s123.pt",
+        "success_rate": 0.28
+      },
+      {
+        "checkpoint": "bc_click-dialog-2_n50_s42.pt",
+        "success_rate": 0.4
+      },
+      {
+        "checkpoint": "bc_click-dialog-2_n50_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "login-user": [
+      {
+        "checkpoint": "bc_login-user_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_login-user_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_login-user_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_login-user_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_login-user_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_login-user_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_login-user_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_login-user_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_login-user_n10_s42.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "enter-text": [
+      {
+        "checkpoint": "bc_enter-text_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_enter-text_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_enter-text_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_enter-text_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_enter-text_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_enter-text_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_enter-text_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_enter-text_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_enter-text_n25_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "click-checkboxes": [
+      {
+        "checkpoint": "bc_click-checkboxes_n10_s123.pt",
+        "success_rate": 0.46
+      },
+      {
+        "checkpoint": "bc_click-checkboxes_n25_s42.pt",
+        "success_rate": 0.34
+      },
+      {
+        "checkpoint": "bc_click-checkboxes_n50_s456.pt",
+        "success_rate": 0.28
+      },
+      {
+        "checkpoint": "bc_click-checkboxes_n10_s42.pt",
+        "success_rate": 0.4
+      },
+      {
+        "checkpoint": "bc_click-checkboxes_n25_s456.pt",
+        "success_rate": 0.32
+      },
+      {
+        "checkpoint": "bc_click-checkboxes_n10_s456.pt",
+        "success_rate": 0.4
+      },
+      {
+        "checkpoint": "bc_click-checkboxes_n50_s123.pt",
+        "success_rate": 0.44
+      },
+      {
+        "checkpoint": "bc_click-checkboxes_n25_s123.pt",
+        "success_rate": 0.4
+      },
+      {
+        "checkpoint": "bc_click-checkboxes_n50_s42.pt",
+        "success_rate": 0.46
+      }
+    ],
+    "email-inbox": [
+      {
+        "checkpoint": "bc_email-inbox_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_email-inbox_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_email-inbox_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_email-inbox_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_email-inbox_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_email-inbox_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_email-inbox_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_email-inbox_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_email-inbox_n50_s123.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "navigate-tree": [
+      {
+        "checkpoint": "bc_navigate-tree_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_navigate-tree_n50_s123.pt",
+        "success_rate": 0.12
+      },
+      {
+        "checkpoint": "bc_navigate-tree_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_navigate-tree_n50_s42.pt",
+        "success_rate": 0.14
+      },
+      {
+        "checkpoint": "bc_navigate-tree_n10_s123.pt",
+        "success_rate": 0.08
+      },
+      {
+        "checkpoint": "bc_navigate-tree_n25_s42.pt",
+        "success_rate": 0.14
+      },
+      {
+        "checkpoint": "bc_navigate-tree_n50_s456.pt",
+        "success_rate": 0.16
+      },
+      {
+        "checkpoint": "bc_navigate-tree_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_navigate-tree_n25_s456.pt",
+        "success_rate": 0.16
+      }
+    ],
+    "search-engine": [
+      {
+        "checkpoint": "bc_search-engine_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_search-engine_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_search-engine_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_search-engine_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_search-engine_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_search-engine_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_search-engine_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_search-engine_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_search-engine_n50_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "social-media": [
+      {
+        "checkpoint": "bc_social-media_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_social-media_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_social-media_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_social-media_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_social-media_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_social-media_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_social-media_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_social-media_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_social-media_n50_s42.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "use-autocomplete": [
+      {
+        "checkpoint": "bc_use-autocomplete_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_use-autocomplete_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_use-autocomplete_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_use-autocomplete_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_use-autocomplete_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_use-autocomplete_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_use-autocomplete_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_use-autocomplete_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_use-autocomplete_n50_s123.pt",
+        "success_rate": 0.0
+      }
+    ]
+  },
+  "iql": {
+    "click-button": [
+      {
+        "checkpoint": "iql_click-button_n10_s123.pt",
+        "success_rate": 0.44
+      },
+      {
+        "checkpoint": "iql_click-button_n10_s42.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-button_n10_s456.pt",
+        "success_rate": 0.98
+      },
+      {
+        "checkpoint": "iql_click-button_n25_s123.pt",
+        "success_rate": 0.36
+      },
+      {
+        "checkpoint": "iql_click-button_n25_s42.pt",
+        "success_rate": 0.36
+      },
+      {
+        "checkpoint": "iql_click-button_n25_s456.pt",
+        "success_rate": 0.5
+      },
+      {
+        "checkpoint": "iql_click-button_n50_s123.pt",
+        "success_rate": 0.34
+      },
+      {
+        "checkpoint": "iql_click-button_n50_s42.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-button_n50_s456.pt",
+        "success_rate": 0.96
+      }
+    ],
+    "click-link": [
+      {
+        "checkpoint": "iql_click-link_n10_s123.pt",
+        "success_rate": 0.96
+      },
+      {
+        "checkpoint": "iql_click-link_n10_s42.pt",
+        "success_rate": 0.04
+      },
+      {
+        "checkpoint": "iql_click-link_n10_s456.pt",
+        "success_rate": 0.1
+      },
+      {
+        "checkpoint": "iql_click-link_n25_s123.pt",
+        "success_rate": 0.02
+      },
+      {
+        "checkpoint": "iql_click-link_n25_s42.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-link_n25_s456.pt",
+        "success_rate": 0.24
+      },
+      {
+        "checkpoint": "iql_click-link_n50_s123.pt",
+        "success_rate": 0.98
+      },
+      {
+        "checkpoint": "iql_click-link_n50_s42.pt",
+        "success_rate": 0.2
+      },
+      {
+        "checkpoint": "iql_click-link_n50_s456.pt",
+        "success_rate": 0.04
+      }
+    ],
+    "click-option": [
+      {
+        "checkpoint": "iql_click-option_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-option_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-option_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-option_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-option_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-option_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-option_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-option_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-option_n50_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "click-dialog": [
+      {
+        "checkpoint": "iql_click-dialog_n10_s123.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-dialog_n10_s42.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-dialog_n10_s456.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-dialog_n25_s123.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-dialog_n25_s42.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-dialog_n25_s456.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-dialog_n50_s123.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-dialog_n50_s42.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "iql_click-dialog_n50_s456.pt",
+        "success_rate": 1.0
+      }
+    ],
+    "click-dialog-2": [
+      {
+        "checkpoint": "iql_click-dialog-2_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-dialog-2_n10_s42.pt",
+        "success_rate": 0.3
+      },
+      {
+        "checkpoint": "iql_click-dialog-2_n10_s456.pt",
+        "success_rate": 0.32
+      },
+      {
+        "checkpoint": "iql_click-dialog-2_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-dialog-2_n25_s42.pt",
+        "success_rate": 0.7
+      },
+      {
+        "checkpoint": "iql_click-dialog-2_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-dialog-2_n50_s123.pt",
+        "success_rate": 0.4
+      },
+      {
+        "checkpoint": "iql_click-dialog-2_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-dialog-2_n50_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "login-user": [
+      {
+        "checkpoint": "iql_login-user_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_login-user_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_login-user_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_login-user_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_login-user_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_login-user_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_login-user_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_login-user_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_login-user_n25_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "click-checkboxes": [
+      {
+        "checkpoint": "iql_click-checkboxes_n10_s123.pt",
+        "success_rate": 0.44
+      },
+      {
+        "checkpoint": "iql_click-checkboxes_n25_s42.pt",
+        "success_rate": 0.38
+      },
+      {
+        "checkpoint": "iql_click-checkboxes_n50_s456.pt",
+        "success_rate": 0.34
+      },
+      {
+        "checkpoint": "iql_click-checkboxes_n10_s42.pt",
+        "success_rate": 0.48
+      },
+      {
+        "checkpoint": "iql_click-checkboxes_n25_s456.pt",
+        "success_rate": 0.34
+      },
+      {
+        "checkpoint": "iql_click-checkboxes_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-checkboxes_n50_s123.pt",
+        "success_rate": 0.5
+      },
+      {
+        "checkpoint": "iql_click-checkboxes_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_click-checkboxes_n50_s42.pt",
+        "success_rate": 0.34
+      }
+    ],
+    "email-inbox": [
+      {
+        "checkpoint": "iql_email-inbox_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_email-inbox_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_email-inbox_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_email-inbox_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_email-inbox_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_email-inbox_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_email-inbox_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_email-inbox_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_email-inbox_n50_s123.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "enter-text": [
+      {
+        "checkpoint": "iql_enter-text_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_enter-text_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_enter-text_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_enter-text_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_enter-text_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_enter-text_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_enter-text_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_enter-text_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_enter-text_n25_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "navigate-tree": [
+      {
+        "checkpoint": "iql_navigate-tree_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_navigate-tree_n50_s42.pt",
+        "success_rate": 0.18
+      },
+      {
+        "checkpoint": "iql_navigate-tree_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_navigate-tree_n25_s42.pt",
+        "success_rate": 0.26
+      },
+      {
+        "checkpoint": "iql_navigate-tree_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_navigate-tree_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_navigate-tree_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_navigate-tree_n10_s456.pt",
+        "success_rate": 0.02
+      },
+      {
+        "checkpoint": "iql_navigate-tree_n50_s123.pt",
+        "success_rate": 0.68
+      }
+    ],
+    "search-engine": [
+      {
+        "checkpoint": "iql_search-engine_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_search-engine_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_search-engine_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_search-engine_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_search-engine_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_search-engine_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_search-engine_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_search-engine_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_search-engine_n25_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "social-media": [
+      {
+        "checkpoint": "iql_social-media_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_social-media_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_social-media_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_social-media_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_social-media_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_social-media_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_social-media_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_social-media_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_social-media_n50_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "use-autocomplete": [
+      {
+        "checkpoint": "iql_use-autocomplete_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_use-autocomplete_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_use-autocomplete_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_use-autocomplete_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_use-autocomplete_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_use-autocomplete_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_use-autocomplete_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_use-autocomplete_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_use-autocomplete_n50_s42.pt",
+        "success_rate": 0.0
+      }
+    ]
+  },
+  "dt": {
+    "click-button": [
+      {
+        "checkpoint": "dt_click-button_n10_s123.pt",
+        "success_rate": 0.2
+      },
+      {
+        "checkpoint": "dt_click-button_n25_s42.pt",
+        "success_rate": 0.05
+      },
+      {
+        "checkpoint": "dt_click-button_n50_s456.pt",
+        "success_rate": 0.25
+      },
+      {
+        "checkpoint": "dt_click-button_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-button_n25_s456.pt",
+        "success_rate": 0.2
+      },
+      {
+        "checkpoint": "dt_click-button_n10_s456.pt",
+        "success_rate": 0.3
+      },
+      {
+        "checkpoint": "dt_click-button_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-button_n25_s123.pt",
+        "success_rate": 0.3
+      },
+      {
+        "checkpoint": "dt_click-button_n50_s42.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "click-checkboxes": [
+      {
+        "checkpoint": "dt_click-checkboxes_n25_s123.pt",
+        "success_rate": 0.25
+      },
+      {
+        "checkpoint": "dt_click-checkboxes_n50_s42.pt",
+        "success_rate": 0.2
+      },
+      {
+        "checkpoint": "dt_click-checkboxes_n10_s123.pt",
+        "success_rate": 0.2
+      },
+      {
+        "checkpoint": "dt_click-checkboxes_n25_s42.pt",
+        "success_rate": 0.15
+      },
+      {
+        "checkpoint": "dt_click-checkboxes_n50_s456.pt",
+        "success_rate": 0.3
+      },
+      {
+        "checkpoint": "dt_click-checkboxes_n10_s42.pt",
+        "success_rate": 0.15
+      },
+      {
+        "checkpoint": "dt_click-checkboxes_n25_s456.pt",
+        "success_rate": 0.15
+      },
+      {
+        "checkpoint": "dt_click-checkboxes_n10_s456.pt",
+        "success_rate": 0.1
+      },
+      {
+        "checkpoint": "dt_click-checkboxes_n50_s123.pt",
+        "success_rate": 0.15
+      }
+    ],
+    "click-dialog-2": [
+      {
+        "checkpoint": "dt_click-dialog-2_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-dialog-2_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-dialog-2_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-dialog-2_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-dialog-2_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-dialog-2_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-dialog-2_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-dialog-2_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-dialog-2_n25_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "click-dialog": [
+      {
+        "checkpoint": "dt_click-dialog_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-dialog_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-dialog_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-dialog_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-dialog_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-dialog_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-dialog_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-dialog_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-dialog_n50_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "click-link": [
+      {
+        "checkpoint": "dt_click-link_n10_s123.pt",
+        "success_rate": 0.05
+      },
+      {
+        "checkpoint": "dt_click-link_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-link_n50_s456.pt",
+        "success_rate": 0.15
+      },
+      {
+        "checkpoint": "dt_click-link_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-link_n25_s456.pt",
+        "success_rate": 0.05
+      },
+      {
+        "checkpoint": "dt_click-link_n10_s456.pt",
+        "success_rate": 0.25
+      },
+      {
+        "checkpoint": "dt_click-link_n50_s123.pt",
+        "success_rate": 0.05
+      },
+      {
+        "checkpoint": "dt_click-link_n25_s123.pt",
+        "success_rate": 0.3
+      },
+      {
+        "checkpoint": "dt_click-link_n50_s42.pt",
+        "success_rate": 0.25
+      }
+    ],
+    "click-option": [
+      {
+        "checkpoint": "dt_click-option_n25_s123.pt",
+        "success_rate": 0.15
+      },
+      {
+        "checkpoint": "dt_click-option_n50_s42.pt",
+        "success_rate": 0.05
+      },
+      {
+        "checkpoint": "dt_click-option_n10_s123.pt",
+        "success_rate": 0.15
+      },
+      {
+        "checkpoint": "dt_click-option_n25_s42.pt",
+        "success_rate": 0.05
+      },
+      {
+        "checkpoint": "dt_click-option_n50_s456.pt",
+        "success_rate": 0.05
+      },
+      {
+        "checkpoint": "dt_click-option_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_click-option_n25_s456.pt",
+        "success_rate": 0.35
+      },
+      {
+        "checkpoint": "dt_click-option_n10_s456.pt",
+        "success_rate": 0.4
+      },
+      {
+        "checkpoint": "dt_click-option_n50_s123.pt",
+        "success_rate": 0.05
+      }
+    ],
+    "email-inbox": [
+      {
+        "checkpoint": "dt_email-inbox_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_email-inbox_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_email-inbox_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_email-inbox_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_email-inbox_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_email-inbox_n25_s42.pt",
+        "success_rate": 0.05
+      },
+      {
+        "checkpoint": "dt_email-inbox_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_email-inbox_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_email-inbox_n25_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "enter-text": [
+      {
+        "checkpoint": "dt_enter-text_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_enter-text_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_enter-text_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_enter-text_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_enter-text_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_enter-text_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_enter-text_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_enter-text_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_enter-text_n50_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "login-user": [
+      {
+        "checkpoint": "dt_login-user_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_login-user_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_login-user_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_login-user_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_login-user_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_login-user_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_login-user_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_login-user_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_login-user_n50_s42.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "navigate-tree": [
+      {
+        "checkpoint": "dt_navigate-tree_n25_s123.pt",
+        "success_rate": 0.15
+      },
+      {
+        "checkpoint": "dt_navigate-tree_n50_s42.pt",
+        "success_rate": 0.25
+      },
+      {
+        "checkpoint": "dt_navigate-tree_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_navigate-tree_n25_s42.pt",
+        "success_rate": 0.05
+      },
+      {
+        "checkpoint": "dt_navigate-tree_n50_s456.pt",
+        "success_rate": 0.15
+      },
+      {
+        "checkpoint": "dt_navigate-tree_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_navigate-tree_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_navigate-tree_n10_s456.pt",
+        "success_rate": 0.05
+      },
+      {
+        "checkpoint": "dt_navigate-tree_n50_s123.pt",
+        "success_rate": 0.15
+      }
+    ],
+    "search-engine": [
+      {
+        "checkpoint": "dt_search-engine_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_search-engine_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_search-engine_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_search-engine_n50_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_search-engine_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_search-engine_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_search-engine_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_search-engine_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_search-engine_n25_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "social-media": [
+      {
+        "checkpoint": "dt_social-media_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_social-media_n25_s456.pt",
+        "success_rate": 0.05
+      },
+      {
+        "checkpoint": "dt_social-media_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_social-media_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_social-media_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_social-media_n50_s42.pt",
+        "success_rate": 0.1
+      },
+      {
+        "checkpoint": "dt_social-media_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_social-media_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_social-media_n50_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "use-autocomplete": [
+      {
+        "checkpoint": "dt_use-autocomplete_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_use-autocomplete_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_use-autocomplete_n50_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_use-autocomplete_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_use-autocomplete_n25_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_use-autocomplete_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_use-autocomplete_n50_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_use-autocomplete_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "dt_use-autocomplete_n50_s42.pt",
+        "success_rate": 0.0
+      }
+    ]
+  },
+  "ppo": {
+    "click-button": [
+      {
+        "checkpoint": "ppo_click-button_n0_s123.pt",
+        "success_rate": 0.96
+      },
+      {
+        "checkpoint": "ppo_click-button_n0_s42.pt",
+        "success_rate": 0.96
+      },
+      {
+        "checkpoint": "ppo_click-button_n0_s456.pt",
+        "success_rate": 0.98
+      }
+    ],
+    "click-link": [
+      {
+        "checkpoint": "ppo_click-link_n0_s123.pt",
+        "success_rate": 0.96
+      },
+      {
+        "checkpoint": "ppo_click-link_n0_s456.pt",
+        "success_rate": 0.96
+      },
+      {
+        "checkpoint": "ppo_click-link_n0_s42.pt",
+        "success_rate": 0.92
+      }
+    ],
+    "click-dialog": [
+      {
+        "checkpoint": "ppo_click-dialog_n0_s123.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "ppo_click-dialog_n0_s42.pt",
+        "success_rate": 1.0
+      },
+      {
+        "checkpoint": "ppo_click-dialog_n0_s456.pt",
+        "success_rate": 1.0
+      }
+    ],
+    "click-dialog-2": [
+      {
+        "checkpoint": "ppo_click-dialog-2_n0_s123.pt",
+        "success_rate": 0.46
+      },
+      {
+        "checkpoint": "ppo_click-dialog-2_n0_s456.pt",
+        "success_rate": 0.4
+      },
+      {
+        "checkpoint": "ppo_click-dialog-2_n0_s42.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "enter-text": [
+      {
+        "checkpoint": "ppo_enter-text_n0_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "ppo_enter-text_n0_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "ppo_enter-text_n0_s42.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "click-checkboxes": [
+      {
+        "checkpoint": "ppo_click-checkboxes_n0_s123.pt",
+        "success_rate": 0.12
+      },
+      {
+        "checkpoint": "ppo_click-checkboxes_n0_s42.pt",
+        "success_rate": 0.28
+      },
+      {
+        "checkpoint": "ppo_click-checkboxes_n0_s456.pt",
+        "success_rate": 0.48
+      }
+    ],
+    "email-inbox": [
+      {
+        "checkpoint": "ppo_email-inbox_n0_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "ppo_email-inbox_n0_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "ppo_email-inbox_n0_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "navigate-tree": [
+      {
+        "checkpoint": "ppo_navigate-tree_n0_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "ppo_navigate-tree_n0_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "ppo_navigate-tree_n0_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "search-engine": [
+      {
+        "checkpoint": "ppo_search-engine_n0_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "ppo_search-engine_n0_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "ppo_search-engine_n0_s123.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "social-media": [
+      {
+        "checkpoint": "ppo_social-media_n0_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "ppo_social-media_n0_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "ppo_social-media_n0_s42.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "click-option": [
+      {
+        "checkpoint": "ppo_click-option_n0_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "ppo_click-option_n0_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "ppo_click-option_n0_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "login-user": [
+      {
+        "checkpoint": "ppo_login-user_n0_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "ppo_login-user_n0_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "ppo_login-user_n0_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "use-autocomplete": [
+      {
+        "checkpoint": "ppo_use-autocomplete_n0_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "ppo_use-autocomplete_n0_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "ppo_use-autocomplete_n0_s456.pt",
+        "success_rate": 0.0
+      }
+    ]
+  }
+}

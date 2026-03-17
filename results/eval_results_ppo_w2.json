@@ -1,0 +1,46 @@
+{
+  "ppo": {
+    "click-checkboxes": [
+      {
+        "checkpoint": "ppo_click-checkboxes_n0_s456.pt",
+        "success_rate": 0.48
+      }
+    ],
+    "click-option": [
+      {
+        "checkpoint": "ppo_click-option_n0_s42.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "email-inbox": [
+      {
+        "checkpoint": "ppo_email-inbox_n0_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "login-user": [
+      {
+        "checkpoint": "ppo_login-user_n0_s42.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "navigate-tree": [
+      {
+        "checkpoint": "ppo_navigate-tree_n0_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "social-media": [
+      {
+        "checkpoint": "ppo_social-media_n0_s123.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "use-autocomplete": [
+      {
+        "checkpoint": "ppo_use-autocomplete_n0_s42.pt",
+        "success_rate": 0.0
+      }
+    ]
+  }
+}

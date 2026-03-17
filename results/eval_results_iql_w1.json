@@ -1,0 +1,88 @@
+{
+  "iql": {
+    "click-checkboxes": [
+      {
+        "checkpoint": "iql_click-checkboxes_n10_s42.pt",
+        "success_rate": 0.48
+      },
+      {
+        "checkpoint": "iql_click-checkboxes_n25_s456.pt",
+        "success_rate": 0.34
+      }
+    ],
+    "email-inbox": [
+      {
+        "checkpoint": "iql_email-inbox_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_email-inbox_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_email-inbox_n50_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "enter-text": [
+      {
+        "checkpoint": "iql_enter-text_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_enter-text_n50_s42.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "login-user": [
+      {
+        "checkpoint": "iql_login-user_n10_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "navigate-tree": [
+      {
+        "checkpoint": "iql_navigate-tree_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_navigate-tree_n25_s42.pt",
+        "success_rate": 0.26
+      },
+      {
+        "checkpoint": "iql_navigate-tree_n50_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "search-engine": [
+      {
+        "checkpoint": "iql_search-engine_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_search-engine_n50_s42.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "social-media": [
+      {
+        "checkpoint": "iql_social-media_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_social-media_n50_s123.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "use-autocomplete": [
+      {
+        "checkpoint": "iql_use-autocomplete_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "iql_use-autocomplete_n25_s456.pt",
+        "success_rate": 0.0
+      }
+    ]
+  }
+}

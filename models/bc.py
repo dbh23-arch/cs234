@@ -1,3 +1,5 @@
+"""BC agent."""
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -5,120 +7,52 @@ from utils.state_encoder import StateEncoder
 
 
 class BCAgent(nn.Module):
-    """Behavioral cloning agent -- predicts action type + element from state."""
-
     def __init__(self, state_dim=256, hidden_dim=256, max_elements=64,
-                 num_action_types=2, element_feature_dim=24,
-                 encoder_type="dom", freeze_lm=True):
+                 num_action_types=2, element_feature_dim=24):
         super().__init__()
-        self.encoder_type = encoder_type
+        self.state_encoder = StateEncoder(
+            element_feature_dim=element_feature_dim,
+            max_elements=max_elements, state_dim=state_dim,
+        )
+        embed_dim = self.state_encoder.embed_dim
 
-        if encoder_type == "text":
-            from utils.text_state_encoder import TextStateEncoder
-            self.state_encoder = TextStateEncoder(
-                state_dim=state_dim,
-                embed_dim=64,
-                max_elements=max_elements,
-                freeze_lm=freeze_lm,
-            )
-        else:
-            self.state_encoder = StateEncoder(
-                element_feature_dim=element_feature_dim,
-                max_elements=max_elements,
-                state_dim=state_dim,
-            )
-
-        # predict click vs type
         self.action_type_head = nn.Sequential(
-            nn.Linear(state_dim, hidden_dim),
-            nn.ReLU(),
+            nn.Linear(state_dim, hidden_dim), nn.ReLU(),
             nn.Linear(hidden_dim, num_action_types),
         )
-
-        # score each element by concatenating global state with element embedding
-        embed_dim = self.state_encoder.embed_dim
         self.element_score = nn.Sequential(
-            nn.Linear(state_dim + embed_dim, hidden_dim),
-            nn.ReLU(),
+            nn.Linear(state_dim + embed_dim, hidden_dim), nn.ReLU(),
             nn.Linear(hidden_dim, 1),
         )
-
         self.max_elements = max_elements
-        self.num_action_types = num_action_types
-
-    def encode_state(self, batch):
-        if self.encoder_type == "text":
-            return self.state_encoder(
-                batch["input_ids"], batch["attention_mask"],
-                batch["element_token_spans"], batch["element_mask"],
-            )
-        else:
-            return self.state_encoder(
-                batch["state_features"], batch["state_mask"],
-            )
-
-    def forward_from_encoded(self, state, element_embeds, element_mask):
-        action_type_logits = self.action_type_head(state)
-
-        B, N, D = element_embeds.shape
-        state_expanded = state.unsqueeze(1).expand(-1, N, -1)
-        combined = torch.cat([state_expanded, element_embeds], dim=-1)
-        element_logits = self.element_score(combined).squeeze(-1)
-        element_logits = element_logits.masked_fill(element_mask == 0, float('-inf'))
-
-        return action_type_logits, element_logits
 
     def forward(self, element_features, element_mask):
         state, element_embeds = self.state_encoder(element_features, element_mask)
-        return self.forward_from_encoded(state, element_embeds, element_mask)
+        at_logits = self.action_type_head(state)
+
+        B, N, D = element_embeds.shape
+        state_exp = state.unsqueeze(1).expand(-1, N, -1)
+        combined = torch.cat([state_exp, element_embeds], dim=-1)
+        el_logits = self.element_score(combined).squeeze(-1)
+        el_logits = el_logits.masked_fill(element_mask == 0, float('-inf'))
+        return at_logits, el_logits
 
     def get_action(self, element_features, element_mask):
         with torch.no_grad():
-            ef = element_features.unsqueeze(0)
-            em = element_mask.unsqueeze(0)
-            at_logits, el_logits = self.forward(ef, em)
-
-            action_type = at_logits.argmax(dim=-1).item()
-            element_idx = el_logits.argmax(dim=-1).item()
-
-        return {"action_type_idx": action_type, "element_idx": element_idx}
-
-    def get_action_text(self, input_ids, attention_mask, element_token_spans,
-                        element_mask):
-        with torch.no_grad():
-            batch = {
-                "input_ids": input_ids.unsqueeze(0),
-                "attention_mask": attention_mask.unsqueeze(0),
-                "element_token_spans": element_token_spans.unsqueeze(0),
-                "element_mask": element_mask.unsqueeze(0),
-            }
-            state, element_embeds = self.encode_state(batch)
-            at_logits, el_logits = self.forward_from_encoded(
-                state, element_embeds, batch["element_mask"]
-            )
-            action_type = at_logits.argmax(dim=-1).item()
-            element_idx = el_logits.argmax(dim=-1).item()
-        return {"action_type_idx": action_type, "element_idx": element_idx}
+            at_logits, el_logits = self.forward(
+                element_features.unsqueeze(0), element_mask.unsqueeze(0))
+        return {
+            "action_type_idx": at_logits.argmax(dim=-1).item(),
+            "element_idx": el_logits.argmax(dim=-1).item(),
+        }
 
     def compute_loss(self, batch):
-        if self.encoder_type == "text":
-            state, element_embeds = self.encode_state(batch)
-            at_logits, el_logits = self.forward_from_encoded(
-                state, element_embeds, batch["element_mask"]
-            )
-        else:
-            at_logits, el_logits = self.forward(
-                batch["state_features"], batch["state_mask"]
-            )
-
+        at_logits, el_logits = self.forward(
+            batch["state_features"], batch["state_mask"])
         at_loss = F.cross_entropy(at_logits, batch["action_type"])
         el_loss = F.cross_entropy(el_logits, batch["element_idx"])
-        total_loss = at_loss + el_loss
-
         return {
-            "loss": total_loss,
-            "action_type_loss": at_loss.item(),
-            "element_loss": el_loss.item(),
+            "loss": at_loss + el_loss,
             "action_type_acc": (at_logits.argmax(-1) == batch["action_type"]).float().mean().item(),
             "element_acc": (el_logits.argmax(-1) == batch["element_idx"]).float().mean().item(),
         }

@@ -1,0 +1,84 @@
+{
+  "bc": {
+    "click-checkboxes": [
+      {
+        "checkpoint": "bc_click-checkboxes_n25_s123.pt",
+        "success_rate": 0.4
+      },
+      {
+        "checkpoint": "bc_click-checkboxes_n50_s42.pt",
+        "success_rate": 0.46
+      }
+    ],
+    "email-inbox": [
+      {
+        "checkpoint": "bc_email-inbox_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_email-inbox_n50_s123.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "enter-text": [
+      {
+        "checkpoint": "bc_enter-text_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_enter-text_n25_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "login-user": [
+      {
+        "checkpoint": "bc_login-user_n10_s42.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "navigate-tree": [
+      {
+        "checkpoint": "bc_navigate-tree_n10_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_navigate-tree_n25_s456.pt",
+        "success_rate": 0.16
+      }
+    ],
+    "search-engine": [
+      {
+        "checkpoint": "bc_search-engine_n10_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_search-engine_n25_s42.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_search-engine_n50_s456.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "social-media": [
+      {
+        "checkpoint": "bc_social-media_n25_s123.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_social-media_n50_s42.pt",
+        "success_rate": 0.0
+      }
+    ],
+    "use-autocomplete": [
+      {
+        "checkpoint": "bc_use-autocomplete_n10_s456.pt",
+        "success_rate": 0.0
+      },
+      {
+        "checkpoint": "bc_use-autocomplete_n50_s123.pt",
+        "success_rate": 0.0
+      }
+    ]
+  }
+}

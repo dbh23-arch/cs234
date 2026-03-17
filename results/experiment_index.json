@@ -1,9 +1,8 @@
 {
-  "bc_enter-text_n50_s42": {
-    "method": "bc",
-    "task": "enter-text",
-    "num_demos": 50,
-    "seed": 42,
-    "encoder_type": "dom"
+  "ppo_use-autocomplete_n0_s456": {
+    "method": "ppo",
+    "task": "use-autocomplete",
+    "num_demos": 0,
+    "seed": 456
   }
 }
