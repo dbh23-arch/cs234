@@ -1,0 +1,10 @@
+{
+  "ppo": {
+    "click-button": [
+      {
+        "checkpoint": "results/ppo_from_bc_n50/models/human_ppo_click-button_n0_s456.pt",
+        "success_rate": 0.96
+      }
+    ]
+  }
+}

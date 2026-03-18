@@ -1,0 +1,10 @@
+{
+  "ppo": {
+    "click-dialog-2": [
+      {
+        "checkpoint": "results/ppo_from_iql_n250/models/human_ppo_click-dialog-2_n0_s123.pt",
+        "success_rate": 0.7
+      }
+    ]
+  }
+}
