@@ -136,7 +136,12 @@ def load_agent(method, task, cfg, device, model_path):
     else:
         raise ValueError(f"Unknown method: {method}")
 
-    agent.load_state_dict(torch.load(model_path, map_location=device, weights_only=True))
+    sd = torch.load(model_path, map_location=device, weights_only=True)
+    for old_key in list(sd.keys()):
+        if "state_encoder.attention.0." in old_key:
+            new_key = old_key.replace("state_encoder.attention.0.", "state_encoder.attention.")
+            sd[new_key] = sd.pop(old_key)
+    agent.load_state_dict(sd)
     agent.to(device)
     agent.eval()
     return agent
@@ -204,6 +209,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--method", type=str, default=None)
     parser.add_argument("--task", type=str, default=None)
+    parser.add_argument("--model_path", type=str, default=None,
+                        help="Direct path to a .pt checkpoint (requires --method and --task)")
+    parser.add_argument("--out", type=str, default=None,
+                        help="Output JSON path")
     args = parser.parse_args()
 
     with open("configs/default.yaml") as f:
@@ -214,48 +223,56 @@ def main():
         else "cpu"
     )
 
-    methods = [args.method] if args.method else ["bc", "iql", "dt", "ppo"]
-    all_tasks = cfg["env"]["tasks"]["simple"] + cfg["env"]["tasks"]["medium"] + cfg["env"]["tasks"]["hard"]
-    tasks = [args.task] if args.task else all_tasks
     num_episodes = cfg["eval"]["num_episodes"]
-
     results = {}
-    models_dir = os.path.join(cfg["logging"]["save_dir"], "models")
 
-    if not os.path.isdir(models_dir):
-        print(f"No models directory found at {models_dir}. Run train.py first.")
-        return
+    if args.model_path:
+        if not args.method or not args.task:
+            raise ValueError("--model_path requires --method and --task")
+        print(f"  Evaluating {args.model_path} ...")
+        agent = load_agent(args.method, args.task, cfg, device, args.model_path)
+        sr = evaluate_agent(agent=agent, method=args.method, task=args.task,
+                            cfg=cfg, device=device, num_episodes=num_episodes)
+        results[args.method] = {args.task: [{"checkpoint": args.model_path, "success_rate": sr}]}
+        print(f"    success_rate = {sr:.2%}")
+    else:
+        methods = [args.method] if args.method else ["bc", "iql", "dt", "ppo"]
+        all_tasks = cfg["env"]["tasks"]["simple"] + cfg["env"]["tasks"]["medium"] + cfg["env"]["tasks"]["hard"]
+        tasks = [args.task] if args.task else all_tasks
+        models_dir = os.path.join(cfg["logging"]["save_dir"], "models")
 
-    for method in methods:
-        results[method] = {}
-        for task in tasks:
-            prefix = f"{method}_{task}_"
-            ckpts = [f for f in os.listdir(models_dir)
-                     if f.startswith(prefix) and f.endswith(".pt")]
-            if not ckpts:
-                print(f"  [skip] No checkpoints for {method}/{task}")
-                continue
+        if not os.path.isdir(models_dir):
+            print(f"No models directory found at {models_dir}. Run train.py first.")
+            return
 
-            task_results = []
-            for ckpt_file in sorted(ckpts):
-                model_path = os.path.join(models_dir, ckpt_file)
-                print(f"  Evaluating {ckpt_file} ...")
-                agent = load_agent(method, task, cfg, device, model_path)
-                sr = evaluate_agent(agent=agent, method=method, task=task,
-                                    cfg=cfg, device=device,
-                                    num_episodes=num_episodes)
-                task_results.append({
-                    "checkpoint": ckpt_file,
-                    "success_rate": sr,
-                })
-                print(f"    success_rate = {sr:.2%}")
+        for method in methods:
+            results[method] = {}
+            for task in tasks:
+                prefix = f"{method}_{task}_"
+                ckpts = [f for f in os.listdir(models_dir)
+                         if f.startswith(prefix) and f.endswith(".pt")]
+                if not ckpts:
+                    print(f"  [skip] No checkpoints for {method}/{task}")
+                    continue
 
-            results[method][task] = task_results
+                task_results = []
+                for ckpt_file in sorted(ckpts):
+                    model_path = os.path.join(models_dir, ckpt_file)
+                    print(f"  Evaluating {ckpt_file} ...")
+                    agent = load_agent(method, task, cfg, device, model_path)
+                    sr = evaluate_agent(agent=agent, method=method, task=task,
+                                        cfg=cfg, device=device,
+                                        num_episodes=num_episodes)
+                    task_results.append({"checkpoint": ckpt_file, "success_rate": sr})
+                    print(f"    success_rate = {sr:.2%}")
 
-    # save results
-    os.makedirs(cfg["logging"]["save_dir"], exist_ok=True)
-    suffix = f"_{args.method}" if args.method else ""
-    out_path = os.path.join(cfg["logging"]["save_dir"], f"eval_results{suffix}.json")
+                results[method][task] = task_results
+
+    out_path = args.out if args.out else os.path.join(
+        cfg["logging"]["save_dir"],
+        f"eval_results{'_' + args.method if args.method else ''}.json"
+    )
+    os.makedirs(os.path.dirname(out_path) if os.path.dirname(out_path) else ".", exist_ok=True)
     with open(out_path, "w") as f:
         json.dump(results, f, indent=2)
     print(f"\nResults saved to {out_path}")
